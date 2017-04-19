@@ -1,5 +1,5 @@
-defmodule Phoenix.ErrorView do
-  use Phoenix.Web, :view
+defmodule LoginProxy.ErrorView do
+  use LoginProxy.Web, :view
 
   def render("404.html", _assigns) do
     "Page not found"

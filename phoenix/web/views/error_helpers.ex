@@ -1,4 +1,4 @@
-defmodule Phoenix.ErrorHelpers do
+defmodule LoginProxy.ErrorHelpers do
   @moduledoc """
   Conveniences for translating and building error messages.
   """
@@ -32,9 +32,9 @@ defmodule Phoenix.ErrorHelpers do
     #     dgettext "errors", "is invalid"
     #
     if count = opts[:count] do
-      Gettext.dngettext(Phoenix.Gettext, "errors", msg, msg, count, opts)
+      Gettext.dngettext(LoginProxy.Gettext, "errors", msg, msg, count, opts)
     else
-      Gettext.dgettext(Phoenix.Gettext, "errors", msg, opts)
+      Gettext.dgettext(LoginProxy.Gettext, "errors", msg, opts)
     end
   end
 end

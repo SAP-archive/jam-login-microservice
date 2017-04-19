@@ -1,5 +1,5 @@
-defmodule Phoenix.Router do
-  use Phoenix.Web, :router
+defmodule LoginProxy.Router do
+  use LoginProxy.Web, :router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -7,20 +7,21 @@ defmodule Phoenix.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug LoginProxy.EsamlSetup
   end
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
-  scope "/", Phoenix do
+  scope "/", LoginProxy do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", Phoenix do
+  # scope "/api", LoginProxy do
   #   pipe_through :api
   # end
 end

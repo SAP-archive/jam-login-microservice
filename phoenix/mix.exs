@@ -1,8 +1,8 @@
-defmodule Phoenix.Mixfile do
+defmodule LoginProxy.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :phoenix,
+    [app: :login_proxy,
      version: "0.0.1",
      elixir: "~> 1.2",
      elixirc_paths: elixirc_paths(Mix.env),
@@ -16,8 +16,8 @@ defmodule Phoenix.Mixfile do
   #
   # Type `mix help compile.app` for more information.
   def application do
-    [mod: {Phoenix, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext]]
+    [mod: {LoginProxy, []},
+     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext, :esaml]]
   end
 
   # Specifies which paths to compile per environment.
@@ -33,6 +33,8 @@ defmodule Phoenix.Mixfile do
      {:phoenix_html, "~> 2.6"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.11"},
-     {:cowboy, "~> 1.0"}]
+     {:uuid, github: "avtobiff/erlang-uuid", override: true}, # esaml dependency. version mismatch.
+     {:esaml, github: "arekinath/esaml"},
+     {:cowboy, "~> 1.0", override: true}] # esaml dependency. version mismatch.
   end
 end

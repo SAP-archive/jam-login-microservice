@@ -1,5 +1,5 @@
-defmodule Phoenix.PageControllerTest do
-  use Phoenix.ConnCase
+defmodule LoginProxy.PageControllerTest do
+  use LoginProxy.ConnCase
 
   test "GET /", %{conn: conn} do
     conn = get conn, "/"

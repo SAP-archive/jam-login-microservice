@@ -1,4 +1,4 @@
-defmodule Phoenix.ChannelCase do
+defmodule LoginProxy.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -22,7 +22,7 @@ defmodule Phoenix.ChannelCase do
 
 
       # The default endpoint for testing
-      @endpoint Phoenix.Endpoint
+      @endpoint LoginProxy.Endpoint
     end
   end
 

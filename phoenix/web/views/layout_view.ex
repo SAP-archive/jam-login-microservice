@@ -1,3 +1,3 @@
-defmodule Phoenix.LayoutView do
-  use Phoenix.Web, :view
+defmodule LoginProxy.LayoutView do
+  use LoginProxy.Web, :view
 end

@@ -1,12 +1,12 @@
-defmodule Phoenix.Web do
+defmodule LoginProxy.Web do
   @moduledoc """
   A module that keeps using definitions for controllers,
   views and so on.
 
   This can be used in your application as:
 
-      use Phoenix.Web, :controller
-      use Phoenix.Web, :view
+      use LoginProxy.Web, :controller
+      use LoginProxy.Web, :view
 
   The definitions below will be executed for every view,
   controller, etc, so keep them short and clean, focused
@@ -26,8 +26,8 @@ defmodule Phoenix.Web do
     quote do
       use Phoenix.Controller
 
-      import Phoenix.Router.Helpers
-      import Phoenix.Gettext
+      import LoginProxy.Router.Helpers
+      import LoginProxy.Gettext
     end
   end
 
@@ -41,9 +41,9 @@ defmodule Phoenix.Web do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import Phoenix.Router.Helpers
-      import Phoenix.ErrorHelpers
-      import Phoenix.Gettext
+      import LoginProxy.Router.Helpers
+      import LoginProxy.ErrorHelpers
+      import LoginProxy.Gettext
     end
   end
 
@@ -56,7 +56,7 @@ defmodule Phoenix.Web do
   def channel do
     quote do
       use Phoenix.Channel
-      import Phoenix.Gettext
+      import LoginProxy.Gettext
     end
   end
 
