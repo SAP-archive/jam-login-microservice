@@ -18,6 +18,10 @@ defmodule LoginProxy.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+
+    get "/saml/metadata", PageController, :metadata
+    get "/saml/auth", PageController, :auth
+    post "/saml/consume", PageController, :consume
   end
 
   # Other scopes may use custom stacks.
