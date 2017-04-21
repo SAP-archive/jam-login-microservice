@@ -19,9 +19,9 @@ defmodule LoginProxy.Router do
 
     get "/", PageController, :index
 
-    get "/saml/metadata", PageController, :metadata
-    get "/saml/auth", PageController, :auth
-    post "/saml/consume", PageController, :consume
+    get "/saml/metadata", SamlController, :metadata
+    get "/saml/auth", SamlController, :auth
+    post "/saml/consume", SamlController, :consume
   end
 
   # Other scopes may use custom stacks.
