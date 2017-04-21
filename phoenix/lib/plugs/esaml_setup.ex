@@ -23,8 +23,8 @@ defmodule LoginProxy.EsamlSetup do
       key: priv_key,
       certificate: cert,
       trusted_fingerprints: fingerprints,
-      consume_uri: base ++ '/saml/consume', # we need to route these
-      metadata_uri: base ++ '/saml/metadata',
+      consume_uri: 'http://mo-b3aa2dd9e.mo.sap.corp:8808', # base ++ '/saml/consume',
+      metadata_uri: 'jamclm.sap.com', # base ++ '/saml/metadata',
       org: Records.esaml_org(
         name: 'SAP JAM CLM',
         displayname: 'Kora',

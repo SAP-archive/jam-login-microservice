@@ -17,6 +17,8 @@ defmodule LoginProxy.PageController do
   def auth(conn, _params) do
     req = conn.adapter |> elem(1)
     login_location = Records.esaml_idp_metadata(conn.assigns.idp, :login_location)
+    signed_xml = conn.assigns.sp.generate_authn_request(login_location)
+    IO.puts "XML: " <> inspect(:lists.flatten(:xmerl.export([signed_xml], :xmerl_xml)))
     {:ok, _} = :esaml_cowboy.reply_with_authnreq(conn.assigns.sp, login_location, "foo", req)
     conn |> put_status(:temporary_redirect) |> Map.put(:state, :sent)
   end
