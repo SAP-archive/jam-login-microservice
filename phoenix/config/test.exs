@@ -8,3 +8,6 @@ config :login_proxy, LoginProxy.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+config :login_proxy, :redis,
+  key_prefix: "TEST::LOGIN::PROXY::"

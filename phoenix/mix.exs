@@ -17,7 +17,7 @@ defmodule LoginProxy.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {LoginProxy, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext, :esaml]]
+     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext, :esaml, :redix]]
   end
 
   # Specifies which paths to compile per environment.
@@ -35,6 +35,7 @@ defmodule LoginProxy.Mixfile do
      {:gettext, "~> 0.11"},
      {:uuid, github: "avtobiff/erlang-uuid", override: true}, # esaml dependency. version mismatch.
      {:esaml, github: "arekinath/esaml"},
+     {:redix, ">= 0.0.0"},
      {:cowboy, "~> 1.0", override: true}] # esaml dependency. version mismatch.
   end
 end

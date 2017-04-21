@@ -25,6 +25,14 @@ config :login_proxy, :esaml,
   cert_file: "JAM_CLM.pem",
   idp_metadata_url: "https://accounts400.sap.com/saml2/metadata/accounts.sap.com"
 
+config :login_proxy, :redis,
+  pool_size: 5,
+  key_prefix: "LOGIN::PROXY::",
+  redix: [
+    host: "localhost",
+    port: 6379
+  ]
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
