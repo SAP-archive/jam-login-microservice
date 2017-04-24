@@ -11,3 +11,7 @@ config :logger, level: :warn
 
 config :login_proxy, :redis,
   key_prefix: "TEST::LOGIN::PROXY::"
+
+config :login_proxy, :remote_app,
+  browser_server: [url: "https://clm-ci.mo.sap.corp"],
+  api_server: [url: "http://api.sapjam.com:8080"]

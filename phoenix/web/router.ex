@@ -7,25 +7,45 @@ defmodule LoginProxy.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug LoginProxy.EsamlSetup
+    plug LoginProxy.Authenticate,
+      no_auth_paths: ~w(/auth/login /auth/logout /auth/saml /auth/saml_consume /auth/saml_metadata)
   end
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
+    plug LoginProxy.Authenticate
   end
 
+  # This scope is just for local test.
+  scope "/login_proxy", LoginProxy do
+    pipe_through :browser
+
+    get "/", PageController, :index
+  end
+
+  scope "/auth", LoginProxy do
+    pipe_through :browser
+
+    get "/saml", SamlController, :auth
+    get "/saml_metadata", SamlController, :metadata
+    post "/saml_consume", SamlController, :consume
+
+    get "/login", SamlController, :login # TODO: Remove after saml works
+    get "/logout", SamlController, :logout
+  end
+
+  # API: Ensure loging, then forward to the API server.
+  scope "/api", LoginProxy do
+    pipe_through :api
+
+    forward "/", ApiForwarder, [remote_app: :api_server]
+  end
+
+  # Everthing else: Ensure login, then forward to the browser server.
   scope "/", LoginProxy do
     pipe_through :browser # Use the default browser stack
 
-    get "/", PageController, :index
-
-    get "/saml/metadata", SamlController, :metadata
-    get "/saml/auth", SamlController, :auth
-    post "/saml/consume", SamlController, :consume
+    forward "/", BrowserForwarder, [remote_app: :browser_server]
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", LoginProxy do
-  #   pipe_through :api
-  # end
 end

@@ -1,8 +1,15 @@
 defmodule LoginProxy.PageControllerTest do
   use LoginProxy.ConnCase
 
-  test "GET /", %{conn: conn} do
-    conn = get conn, "/"
+  test "GET /login_proxy (auth failure)", %{conn: conn} do
+    conn = get conn, "/auth/logout"
+    conn = get conn, "/login_proxy"
+    assert html_response(conn, 401) =~ "Please log in first."
+  end
+
+  test "GET /login_proxy", %{conn: conn} do
+    conn = get conn, "/auth/login"
+    conn = get conn, "/login_proxy"
     assert html_response(conn, 200) =~ "Welcome to Phoenix!"
   end
 end

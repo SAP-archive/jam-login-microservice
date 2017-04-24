@@ -1,6 +1,4 @@
 defmodule LoginProxy.EsamlSetup do
-  import Plug.Conn
-  use Application
   require Logger
   require LoginProxy.Records
   alias LoginProxy.Records
@@ -11,7 +9,7 @@ defmodule LoginProxy.EsamlSetup do
     Application.get_env(:login_proxy, :esaml)[key]
   end
 
-  defp setup_esaml() do
+  def setup_esaml() do
     Logger.debug("setup_esaml")
     priv_key = :esaml_util.load_private_key(esaml_env(:key_file) |> to_charlist)
     cert = :esaml_util.load_certificate(esaml_env(:cert_file) |> to_charlist)
@@ -41,17 +39,5 @@ defmodule LoginProxy.EsamlSetup do
 
     #Logger.debug("sp, idp: \n" <> inspect(sp) <> "\n\n" <> inspect(idp))
     {:ok, sp, idp}
-  end
-
-  def call(conn, _opts) do
-    {:ok, sp, idp} = setup_esaml()
-    Map.put(conn, :assigns, %{sp: sp, idp: idp})
-    # if authenticated?(conn) do
-    #   conn
-    # else
-    #   conn
-    #   |> send_resp(401, "Auth failed")
-    #   |> halt
-    # end
   end
 end

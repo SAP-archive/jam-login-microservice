@@ -4,6 +4,36 @@ defmodule LoginProxy.SamlController do
   alias LoginProxy.Records
   require Logger
 
+  # TODO: login to be removed and replaced with auth
+  def login(conn, _params) do
+    Logger.debug "Previous session uuid: " <> inspect(get_session(conn, :session_id))
+    # Check if logged in. If yes, just refresh, otherwise create a session.
+    case get_session(conn, :session_id) do      
+      nil ->
+        uuid = (:uuid.uuid4() |> :uuid.to_string() |> to_string) # erlang string to elixir string
+        :ok = LoginProxy.SessionStore.save(uuid, 
+          %{"email" => "sam@sap.com", "firstname" => "Sam", "lastname" => "Doe"})
+        conn = put_session(conn, :session_id, uuid)
+        text conn, "You are now logged in!"
+      uuid ->
+        LoginProxy.SessionStore.refresh(uuid)
+        text conn, "You are already logged in."
+    end
+  end
+
+  def logout(conn, _params) do
+    Logger.debug "Previous session uuid: " <> inspect(get_session(conn, :session_id))
+    # delete session
+    conn =
+      case get_session(conn, :session_id) do
+        nil -> conn
+        uuid ->
+          LoginProxy.SessionStore.delete(uuid)
+          put_session(conn, :session_id, nil)
+      end
+    text conn, "You are now logged out."
+  end
+
   def metadata(conn, _params) do
     req = conn.adapter |> elem(1)
     {:ok, _} = :esaml_cowboy.reply_with_metadata(conn.assigns.sp, req)

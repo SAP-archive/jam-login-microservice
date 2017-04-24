@@ -31,12 +31,17 @@ defmodule LoginProxy.SessionStore do
     end
   end
 
-  defp prefix() do
-    Application.get_env(:login_proxy, :redis)[:key_prefix]
+  def refresh(key) do
+    {result, _} = Redis.command(["EXPIRE", key, @redis_timeout])
+    result
   end
 
-  defp refresh(key) do
-    {:ok, _} = Redis.command(["EXPIRE", key, @redis_timeout])
+  def delete(key) do
+    {:ok, _} = Redis.command(["DEL", key])
     :ok
+  end
+
+  defp prefix() do
+    Application.get_env(:login_proxy, :redis)[:key_prefix]
   end
 end

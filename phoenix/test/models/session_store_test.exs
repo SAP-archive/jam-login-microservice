@@ -6,7 +6,7 @@ defmodule LoginProxy.SessionStore.Test do
   setup do
     case LoginProxy.Redis.command(~w(KEYS TEST::*)) do
       {:ok, []} -> IO.puts "Nothing to clean in Redis" 
-      {:ok, val} -> LoginProxy.Redis.command(["EVAL", "return redis.call('del', unpack(redis.call('keys', KEYS[1])))", "1", "TEST::*"])
+      {:ok, _} -> LoginProxy.Redis.command(["EVAL", "return redis.call('del', unpack(redis.call('keys', KEYS[1])))", "1", "TEST::*"])
       {:error, reason} -> IO.puts inspect(reason)
     end
     :ok

@@ -14,6 +14,7 @@ defmodule LoginProxy.ConnCase do
   """
 
   use ExUnit.CaseTemplate
+  require Logger
 
   using do
     quote do
@@ -28,6 +29,14 @@ defmodule LoginProxy.ConnCase do
   end
 
   setup tags do
+
+    unless tags[:async] do
+      case LoginProxy.Redis.command(~w(KEYS TEST::*)) do
+        {:ok, []} -> Logger.debug "Nothing to clean in Redis" 
+        {:ok, _} -> LoginProxy.Redis.command(["EVAL", "return redis.call('del', unpack(redis.call('keys', KEYS[1])))", "1", "TEST::*"])
+        {:error, reason} -> Logger.error inspect(reason)
+      end
+    end
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
