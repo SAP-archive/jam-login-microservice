@@ -42,7 +42,7 @@ defmodule LoginProxy.Forwarder do
     case Map.get(response, :message) do
       nil -> {response.body, response.headers, response.status_code}
       msg -> Logger.error("LoginProxy Forwarder error sending to #{url}: " <> msg)
-      {nil, nil, 400}
+      {nil, %{hdrs: []}, 400}
     end
 
     conn = Enum.reduce(resp_headers.hdrs || [], conn, fn h, acc -> put_resp_header(acc, elem(h, 0), elem(h, 1)) end)
