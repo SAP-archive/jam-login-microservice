@@ -38,6 +38,7 @@ defmodule LoginProxy.Mixfile do
      {:esaml, github: "arekinath/esaml"},
      {:redix, ">= 0.0.0"},
      {:httpotion, "~> 3.0.2"},
+     {:joken, "~> 1.4"},
      {:cowboy, "~> 1.0", override: true}] # esaml dependency. version mismatch.
   end
 end

@@ -39,6 +39,9 @@ config :login_proxy, :remote_app,
 
 config :login_proxy, :http_request_module, HTTPotion
 
+config :login_proxy, :jwt,
+  hs256_secret: "g4AhQAENOGwB3zcAvg-nFDUhuPivAggFEMRcYLo8V5rrClX7UFJ5iX2yU1GEJI202HTS7_TBRTwWhgOTHnvwFA"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

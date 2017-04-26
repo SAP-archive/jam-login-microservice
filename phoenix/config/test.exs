@@ -13,7 +13,7 @@ config :login_proxy, :redis,
   key_prefix: "TEST::LOGIN::PROXY::"
 
 config :login_proxy, :remote_app,
-  browser_server: [url: "https://clm-ci.mo.sap.corp"],
+  browser_server: [url: "http://browser.sapjam.com"],
   api_server: [url: "http://api.sapjam.com:8080"]
 
 config :login_proxy, :http_request_module, LoginProxy.HttpMock

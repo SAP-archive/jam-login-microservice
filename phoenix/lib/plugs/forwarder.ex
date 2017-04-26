@@ -3,6 +3,7 @@
 defmodule LoginProxy.Forwarder do
   require Logger
   import Plug.Conn
+  alias LoginProxy.Jwt
 
   def call(conn, opts) do
     # Get remote host and port
@@ -26,7 +27,12 @@ defmodule LoginProxy.Forwarder do
 
     {:ok, body, conn} = read_body(conn)
 
-    headers = for {key, value} <- conn.req_headers, into: [], do: {String.to_atom(key), value}
+    # Generate auth header with JWT containing logged in user
+    auth_header = "Bearer " <> Jwt.create_token(conn.assigns.user)
+
+    headers = for {key, value} <- conn.req_headers, into: [authentication: auth_header] do
+      {String.to_atom(key), value}
+    end
 
     Logger.debug "Forwarding request. method, url, headers, body: \n" <>
     inspect(method) <> "\n" <> inspect(url) <> "\n" <> inspect(headers) <> "\n" <>
