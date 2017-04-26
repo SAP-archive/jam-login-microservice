@@ -1,0 +1,14 @@
+login_proxy_test:
+ image: clm-registry.mo.sap.corp:5000/clm-loginproxy-test
+ links:
+   - redis
+ environment:
+   - MIX_ENV=test
+   - TEST_REPORT=true
+ command: mix test
+ volumes:
+   - ../phoenix/test/reports:/app/current/test/reports
+   - ../phoenix/cover:/app/current/cover
+redis:
+  image: redis:3.0
+

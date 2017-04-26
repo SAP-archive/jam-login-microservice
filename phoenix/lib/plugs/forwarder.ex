@@ -3,7 +3,6 @@
 defmodule LoginProxy.Forwarder do
   require Logger
   import Plug.Conn
-  alias LoginProxy.Jwt
 
   def call(conn, opts) do
     # Get remote host and port
