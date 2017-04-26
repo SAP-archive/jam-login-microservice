@@ -25,6 +25,7 @@ defmodule LoginProxy.ForwarderTest do
     token = request.headers[:authentication] |> String.split() |> Enum.at(1)
     user = LoginProxy.Jwt.verify_token(token)
     assert %{"email" => _, "firstname" => _, "lastname" => _} = user
+    assert "50c5a290-146d-4d54-944c-1bfad270718d" == request.headers[:tenant_uuid]
   end
 
   test "GET /job/ConversationServiceBuild/ (auth failure)", %{conn: conn} do
@@ -50,6 +51,7 @@ defmodule LoginProxy.ForwarderTest do
     token = request.headers[:authentication] |> String.split() |> Enum.at(1)
     user = LoginProxy.Jwt.verify_token(token)
     assert %{"email" => _, "firstname" => _, "lastname" => _} = user
+    assert "50c5a290-146d-4d54-944c-1bfad270718d" == request.headers[:tenant_uuid]
   end
 
 end

@@ -27,10 +27,7 @@ defmodule LoginProxy.Forwarder do
 
     {:ok, body, conn} = read_body(conn)
 
-    # Generate auth header with JWT containing logged in user
-    auth_header = "Bearer " <> Jwt.create_token(conn.assigns.user)
-
-    headers = for {key, value} <- conn.req_headers, into: [authentication: auth_header] do
+    headers = for {key, value} <- conn.req_headers do
       {String.to_atom(key), value}
     end
 

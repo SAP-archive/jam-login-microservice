@@ -10,6 +10,14 @@ defmodule LoginProxy.Authenticate do
 
     {authenticated, conn} = get_authenticated_user(conn)
     if authenticated || no_auth_path?(conn, opts) do
+      # Generate auth header with JWT containing logged in user
+      conn = if Map.get(conn.assigns, :user) do
+        auth_header = "Bearer " <> LoginProxy.Jwt.create_token(conn.assigns.user)
+        conn |> put_req_header("authentication", auth_header)
+      else
+        conn
+      end
+
       conn
       |> assign(:sp, sp)
       |> assign(:idp, idp)

@@ -42,6 +42,21 @@ config :login_proxy, :http_request_module, HTTPotion
 config :login_proxy, :jwt,
   hs256_secret: "g4AhQAENOGwB3zcAvg-nFDUhuPivAggFEMRcYLo8V5rrClX7UFJ5iX2yU1GEJI202HTS7_TBRTwWhgOTHnvwFA"
 
+# This info could be provided by a service later on.
+config :login_proxy, tenants: [
+  %{
+    hostname: "host1.com",
+    name: "Tenant1",
+    uuid: "50c5a290-146d-4d54-944c-1bfad270718d",
+    service_provider_issuer: "issuer1"
+  },
+  %{
+    hostname: "host2.com",
+    name: "Tenant2",
+    uuid: "c75ebed8-b329-4584-afc9-fbc9549e9646",
+    service_provider_issuer: "issuer2"
+  },
+]
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

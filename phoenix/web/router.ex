@@ -7,6 +7,7 @@ defmodule LoginProxy.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug LoginProxy.SetTenant
     plug LoginProxy.Authenticate,
       no_auth_paths: ~w(/auth/login /auth/logout /auth/saml /auth/saml_consume /auth/saml_metadata)
   end
@@ -14,6 +15,7 @@ defmodule LoginProxy.Router do
   pipeline :api do
     plug :accepts, ["json"]
     plug :fetch_session
+    plug LoginProxy.SetTenant
     plug LoginProxy.Authenticate
   end
 
