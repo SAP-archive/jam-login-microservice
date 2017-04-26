@@ -37,6 +37,8 @@ config :login_proxy, :remote_app,
   browser_server: [url: "http://browser.sapjam.com:8080"],
   api_server: [url: "http://api.sapjam.com:8080"]
 
+config :login_proxy, :http_request_module, HTTPotion
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

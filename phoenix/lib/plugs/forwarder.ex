@@ -33,7 +33,7 @@ defmodule LoginProxy.Forwarder do
     inspect(body) <> "\n\n"
 
     response =
-    HTTPotion.request(method, url, [
+    Application.get_env(:login_proxy, :http_request_module).request(method, url, [
       headers: headers,
       body: body
     ])
