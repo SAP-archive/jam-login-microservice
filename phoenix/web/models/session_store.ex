@@ -15,6 +15,7 @@ defmodule LoginProxy.SessionStore do
       firstname: params["firstname"],
       lastname: params["lastname"]
     }) <> "\n"
+    Logger.debug "SessionStore: writing key,value: " <> inspect(key) <> ", " <> inspect(value)
     {:ok, "OK"} = Redis.command(["SET", key, value])
     refresh(key)
   end
@@ -24,7 +25,13 @@ defmodule LoginProxy.SessionStore do
     case Redis.command(["GET", key]) do
       {:ok, value} ->
         refresh(key)
-        Poison.decode!(value)
+        try do
+          Poison.decode!(value)
+        rescue
+          error -> Logger.error("SessionStore: Poison.decode! error: "
+            <> inspect(error) <> " for key,value " <> inspect(key) <> ", " <> inspect(value))
+          nil
+        end
       {:error, reason} ->
         Logger.error("Session load failed: " <> reason)
         nil
