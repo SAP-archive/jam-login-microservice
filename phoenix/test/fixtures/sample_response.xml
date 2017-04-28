@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<Response xmlns="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:ns2="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:ns3="http://www.w3.org/2000/09/xmldsig#" xmlns:ns4="http://www.w3.org/2001/04/xmlenc#" Destination="http://mo-b3aa2dd9e.mo.sap.corp:8808" ID="RES-SSO-d9c9813d-4d49-4e8b-a7f4-0497d22b0504" InResponseTo="7a62aca8-2baa-11e7-ba39-9801a7a92ef1" IssueInstant="2017-04-28T00:34:45.884Z" Version="2.0">
+  <ns2:Issuer>accounts.sap.com</ns2:Issuer>
+  <Status>
+    <StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"/>
+  </Status>
+  <Assertion xmlns="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://www.w3.org/2001/04/xmlenc#" ID="A-1247f0c4-31b4-4361-a748-e8b29b34c992" IssueInstant="2017-04-28T00:34:45.884Z" Version="2.0">
+    <Issuer>accounts.sap.com</Issuer>
+    <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+      <ds:SignedInfo>
+        <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+        <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+        <ds:Reference URI="#A-1247f0c4-31b4-4361-a748-e8b29b34c992">
+          <ds:Transforms>
+            <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+            <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+          </ds:Transforms>
+          <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+          <ds:DigestValue>x3TaxtLVQRq573rIMqMZfcUPyBQ=</ds:DigestValue>
+        </ds:Reference>
+      </ds:SignedInfo>
+      <ds:SignatureValue>L5Yar4GG2/4/schHHHO75tRii/eDOjqSlYbRKBmasrJ2riKEVsxyFW5yyGDycG+bg4dk6wzk9xA7Z0R2q+31igFRvaCL2xMTdL8taBOqlowmbpnBFcbPLxtDGFkAlRPz/WlBgVKO3RRfT7RfiTXK51+1zdDhg07zTpZI0v0A1RU=</ds:SignatureValue>
+      <ds:KeyInfo>
+        <ds:X509Data>
+          <ds:X509Certificate>MIICEzCCAXygAwIBAgIETOp//zANBgkqhkiG9w0BAQUFADBNMQswCQYDVQQGEwJERTEPMA0GA1UEBxMGQmVybGluMQwwCgYDVQQKEwNTQVAxDjAMBgNVBAsTBVdlYkttMQ8wDQYDVQQDEwZDUFMgUUEwIBcNMTAxMTIyMTQzNjQ3WhgPMjExMDEwMjkxNDM2NDdaME0xCzAJBgNVBAYTAkRFMQ8wDQYDVQQHEwZCZXJsaW4xDDAKBgNVBAoTA1NBUDEOMAwGA1UECxMFV2ViS20xDzANBgNVBAMTBkNQUyBRQTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAjGCTddfUltkmYCpiB37R5r5TL0wqdm/DsrXt8CAExtygVfoQQM8avG+duIWqWJHD8K5qpeYRI5GTSSqSMgZfdoqvbfH3EnUd2r2V3E4Eh26JTu0YXYG16xwN9NSXcKhfzCdYeQgsiYPA03sprnTEanQy8KF8B4eRihNK8RhYN4MCAwEAATANBgkqhkiG9w0BAQUFAAOBgQAk7eIJdFxiYLTUk4c/pW63k1L6QOVKgimR9RXDSeZwbP4gMytw3Eb6apyzd+QUbp3UPD2MSLLKsLKO3VWEjAFbzJSRzSneilQDIMMyc8MT/PUdyXyoqGlmKFnH/mboaQiCd1oMlEy1MvnP6TWY5xh97Vsv3wmdLzV4W+nFgW0gTQ==</ds:X509Certificate>
+        </ds:X509Data>
+        <ds:KeyValue>
+          <ds:RSAKeyValue>
+            <ds:Modulus>jGCTddfUltkmYCpiB37R5r5TL0wqdm/DsrXt8CAExtygVfoQQM8avG+duIWqWJHD8K5qpeYRI5GTSSqSMgZfdoqvbfH3EnUd2r2V3E4Eh26JTu0YXYG16xwN9NSXcKhfzCdYeQgsiYPA03sprnTEanQy8KF8B4eRihNK8RhYN4M=</ds:Modulus>
+            <ds:Exponent>AQAB</ds:Exponent>
+          </ds:RSAKeyValue>
+        </ds:KeyValue>
+      </ds:KeyInfo>
+    </ds:Signature>
+    <Subject>
+      <NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">I832806</NameID>
+      <SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
+        <SubjectConfirmationData InResponseTo="7a62aca8-2baa-11e7-ba39-9801a7a92ef1" NotOnOrAfter="2017-04-28T00:44:45.884Z" Recipient="http://mo-b3aa2dd9e.mo.sap.corp:8808"/>
+      </SubjectConfirmation>
+    </Subject>
+    <Conditions NotBefore="2017-04-28T00:29:45.884Z" NotOnOrAfter="2017-04-28T00:44:45.884Z">
+      <AudienceRestriction>
+        <Audience>jamclm.sap.com</Audience>
+      </AudienceRestriction>
+    </Conditions>
+    <AuthnStatement AuthnInstant="2017-04-28T00:34:45.884Z" SessionIndex="S-SP-9eba0261-b5e2-462c-8f15-0f6ff0659a0f" SessionNotOnOrAfter="2017-04-28T12:34:45.884Z">
+      <AuthnContext>
+        <AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:X509</AuthnContextClassRef>
+      </AuthnContext>
+    </AuthnStatement>
+    <AttributeStatement>
+      <Attribute Name="first_name">
+        <AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">Sudhir</AttributeValue>
+      </Attribute>
+      <Attribute Name="email">
+        <AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">sudhir.rao01@sap.com</AttributeValue>
+      </Attribute>
+      <Attribute Name="last_name">
+        <AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">Rao</AttributeValue>
+      </Attribute>
+    </AttributeStatement>
+  </Assertion>
+</Response>

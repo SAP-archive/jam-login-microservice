@@ -18,4 +18,16 @@ defmodule LoginProxy.Records do
     subject: extract(:esaml_subject, from_lib: "esaml/include/esaml.hrl"),
     conditions: [],
     attributes: []
+
+  # xmerl
+  defrecord :xmlDocument, extract(:xmlDocument, from_lib: "xmerl/include/xmerl.hrl")
+  defrecord :xmlAttribute, extract(:xmlAttribute, from_lib: "xmerl/include/xmerl.hrl")
+  defrecord :xmlText, extract(:xmlText, from_lib: "xmerl/include/xmerl.hrl")
+  defrecord :xmlElement, extract(:xmlElement, from_lib: "xmerl/include/xmerl.hrl")
+  defrecord :xmlNamespace, extract(:xmlNamespace, from_lib: "xmerl/include/xmerl.hrl")
+
+  # public_key
+  defrecord :certificate, extract(:'Certificate', from_lib: "public_key/include/public_key.hrl")
+  defrecord :tBSCertificate, extract(:'TBSCertificate', from_lib: "public_key/include/public_key.hrl")
+  defrecord :subjectPublicKeyInfo, extract(:'SubjectPublicKeyInfo', from_lib: "public_key/include/public_key.hrl")
 end
