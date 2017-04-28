@@ -39,6 +39,7 @@ defmodule LoginProxy.Mixfile do
      {:redix, ">= 0.0.0"},
      {:httpotion, "~> 3.0.2"},
      {:joken, "~> 1.4"},
+     {:xml_builder, "~> 0.0.6"},
      {:cowboy, "~> 1.0", override: true}] # esaml dependency. version mismatch.
   end
 end

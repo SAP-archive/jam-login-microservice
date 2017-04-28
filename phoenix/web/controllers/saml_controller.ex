@@ -41,12 +41,10 @@ defmodule LoginProxy.SamlController do
   end
 
   def auth(conn, _params) do
-    req = conn.adapter |> elem(1)
-    login_location = Records.esaml_idp_metadata(conn.assigns.idp, :login_location)
-    signed_xml = conn.assigns.sp.generate_authn_request(login_location)
-    IO.puts "XML: " <> inspect(:lists.flatten(:xmerl.export([signed_xml], :xmerl_xml)))
-    {:ok, _} = :esaml_cowboy.reply_with_authnreq(conn.assigns.sp, login_location, "foo", req)
-    conn |> put_status(:temporary_redirect) |> Map.put(:state, :sent)
+    login_location = Records.esaml_idp_metadata(conn.assigns.idp, :login_location) |> to_string
+    xml = LoginProxy.AuthnRequest.generate_authn_request(conn.assigns.sp, login_location)
+    redirect_url = LoginProxy.AuthnRequest.encode_http_redirect(login_location, xml, "foo")
+    conn |> redirect(external: redirect_url)
   end
 
   def consume(conn, _params) do
