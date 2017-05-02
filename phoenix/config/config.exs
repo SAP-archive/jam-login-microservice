@@ -23,7 +23,8 @@ config :login_proxy, :esaml,
   base: "http://some.kora.sapkora.com",
   key_file: Path.join([Mix.Project.build_path, "..", "..", "JAM_CLM_KEY.pem"]),
   cert_file: Path.join([Mix.Project.build_path, "..", "..", "JAM_CLM.pem"]),
-  idp_metadata_url: "https://accounts400.sap.com/saml2/metadata/accounts.sap.com"
+  idp_metadata_url: "https://accounts400.sap.com/saml2/metadata/accounts.sap.com",
+  allow_stale: false
 
 config :login_proxy, :redis,
   pool_size: 5,

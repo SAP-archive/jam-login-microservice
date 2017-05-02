@@ -40,26 +40,49 @@ defmodule LoginProxy.SamlController do
     conn |> put_status(:ok) |> Map.put(:state, :sent) # already sent via cowboy, so just update conn.state
   end
 
-  def auth(conn, _params) do
+  def auth(conn, params) do
     login_location = Records.esaml_idp_metadata(conn.assigns.idp, :login_location) |> to_string
     xml = LoginProxy.AuthnRequest.generate_authn_request(conn.assigns.sp, login_location)
-    redirect_url = LoginProxy.AuthnRequest.encode_http_redirect(login_location, xml, "foo")
+    redirect_url = LoginProxy.AuthnRequest.encode_http_redirect(login_location, xml, params["RelayState"])
     conn |> redirect(external: redirect_url)
   end
 
-  def consume(conn, _params) do
-    req = conn.adapter |> elem(1)
-    case :esaml_cowboy.validate_assertion(conn.assigns.sp, &:esaml_util.check_dupe_ets/2, req) do
-      {:ok, assertion, _relaystate, _} ->
-        attrs = Records.esaml_assertion(assertion.attributes)
-        uid = :proplists.get_value(:uid, attrs)
-        Logger.debug("Saml attributes: " <> inspect(attrs))
-        Logger.debug("Saml uid: " <> inspect(uid))
+  def consume(conn, params) do
+    xml = :esaml_binding.decode_response(nil, params["SAMLResponse"])
+    allow_stale_response = Application.get_env(:login_proxy, :esaml)[:allow_stale]
+    case LoginProxy.SamlVerify.validate_assertion(xml, fn _x, _y -> :ok end, conn.assigns.sp, allow_stale_response) do
+      {:error, reason} ->
+        conn
+        |> put_status(403)
+        |> text("Access denied, assertion failed validation: " <> inspect(reason))
+      {:ok, assertion} ->
         # Process the successful login
-        render conn, "index.html"
-
-      {:error, reason, _} ->
-        conn |> send_resp(403, "Access denied, assertion failed validation: " <> inspect(reason))
+        attrs = Records.esaml_assertion(assertion, :attributes)
+        email = Keyword.get(attrs, :email) |> to_string
+        firstname = Keyword.get(attrs, :first_name) |> to_string
+        lastname = Keyword.get(attrs, :last_name) |> to_string
+        username = assertion |> Records.esaml_assertion(:subject) |> Records.esaml_subject(:name) |> to_string
+        Logger.debug "username, email, first, last: \n" <> "#{username}, #{email}, #{firstname}, #{lastname}"
+        # Save session
+        uuid = :uuid.uuid4() |> :uuid.to_string() |> to_string
+        :ok = LoginProxy.SessionStore.save(uuid, 
+          %{"username" => username, "email" => email, "firstname" => firstname, "lastname" => lastname})
+        conn = put_session(conn, :session_id, uuid)
+        # Get saved request path
+        key = LoginProxy.Authenticate.relay_state_key(params["RelayState"])
+        Logger.debug "Getting original url from RelayState: " <> inspect(params["RelayState"])
+        redirect_path =
+        case LoginProxy.Redis.command(["GET", key]) do
+          {:ok, redirect_path} ->
+            {:ok, _} = LoginProxy.Redis.command(["DEL", key])
+            redirect_path
+          {:error, reason} ->
+            Logger.error("Relay state load failed: " <> reason)
+            "/"
+        end
+        Logger.debug "Redirecting to original URL: " <> inspect(redirect_path)
+        # Redirect to original URL
+        redirect conn, external: redirect_path
     end
   end
 end

@@ -49,6 +49,6 @@ defmodule LoginProxy.SessionStore do
   end
 
   defp prefix() do
-    Application.get_env(:login_proxy, :redis)[:key_prefix]
+    Redis.prefix() <> "::SESSION::"
   end
 end

@@ -13,7 +13,7 @@ defmodule LoginProxy.SamlVerify do
         end,
         fn a ->
           if esaml_sp(sp, :idp_signs_envelopes) do
-            case __MODULE__.verify(xml, esaml_sp(sp, :trusted_fingerprints)) do
+            case __MODULE__.verify(a, esaml_sp(sp, :trusted_fingerprints)) do
               :ok -> a
               outerError -> {:error, {:envelope, outerError}}
             end;
@@ -34,7 +34,9 @@ defmodule LoginProxy.SamlVerify do
         fn a ->
           case :esaml.validate_assertion(a, esaml_sp(sp, :consume_uri), esaml_sp(sp, :metadata_uri)) do
             {:ok, ar} -> ar
-            {:error, :stale_assertion} -> if allowStale, do: {:ok, a}, else: {:error, :stale_assertion}
+            {:error, :stale_assertion} -> if allowStale, 
+              do: elem(:esaml.decode_assertion(a), 1), 
+              else: {:error, :stale_assertion}
             {:error, reason} -> {:error, reason}
           end
         end,
@@ -160,7 +162,7 @@ defmodule LoginProxy.SamlVerify do
     |> Enum.filter(fn kid ->
       case :xmerl_c14n.canon_name(kid) do
         'http://www.w3.org/2000/09/xmldsig#Signature' -> false
-        name -> true
+        _ -> true
       end
     end)
     xmlElement(element, content: newKids)

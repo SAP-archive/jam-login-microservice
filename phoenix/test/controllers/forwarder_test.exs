@@ -31,7 +31,7 @@ defmodule LoginProxy.ForwarderTest do
   test "GET /job/ConversationServiceBuild/ (auth failure)", %{conn: conn} do
     conn = get conn, "/auth/logout"
     conn = get conn, "/job/ConversationServiceBuild/"
-    assert html_response(conn, 401) =~ "Please log in first."
+    assert html_response(conn, 302) =~ ~r/You are being.*redirected/
   end
 
   test "GET /api/v1/testing/api", %{conn: conn} do

@@ -22,12 +22,25 @@ defmodule LoginProxy.Authenticate do
       |> assign(:sp, sp)
       |> assign(:idp, idp)
     else
-      # redirect conn, to: "/auth/saml"
-      conn
-      |> put_resp_header("content-type", "text/html")
-      |> send_resp(401, "Please log in first.")
+      # Save current path in Redis
+      relay_state = save_current_path(conn.request_path)
+      # Redirect
+      Logger.debug "Redirecting to: " <> "/auth/saml?RelayState=#{relay_state}"
+      Phoenix.Controller.redirect(conn, external: "/auth/saml?RelayState=#{relay_state}")
       |> halt
     end
+  end
+
+  def save_current_path(path) do
+    Logger.debug "Saving RelayState with url: " <> path
+    relay_state = :uuid.uuid4() |> :uuid.to_string() |> to_string
+    key = relay_state_key(relay_state)
+    {:ok, "OK"} = LoginProxy.Redis.command(["SET", key, path])
+    relay_state
+  end
+
+  def relay_state_key(relay_state) do
+    LoginProxy.Redis.prefix() <> "::RELAY::" <> relay_state
   end
 
   # Get user from session and set it in conn.
@@ -40,7 +53,7 @@ defmodule LoginProxy.Authenticate do
         if user do
           {true, conn |> assign(:user, user)}
         else
-          {false, conn}
+          {false, put_session(conn, :session_id, nil)}
         end
     end
   end

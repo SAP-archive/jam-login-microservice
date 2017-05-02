@@ -4,7 +4,7 @@ defmodule LoginProxy.PageControllerTest do
   test "GET /login_proxy (auth failure)", %{conn: conn} do
     conn = get conn, "/auth/logout"
     conn = get conn, "/login_proxy"
-    assert html_response(conn, 401) =~ "Please log in first."
+    assert html_response(conn, 302) =~ ~r/You are being.*redirected/
   end
 
   test "GET /login_proxy", %{conn: conn} do

@@ -17,3 +17,6 @@ config :login_proxy, :remote_app,
   api_server: [url: "http://api.sapjam.com:8080"]
 
 config :login_proxy, :http_request_module, LoginProxy.HttpMock
+
+config :login_proxy, :esaml,
+  allow_stale: true
