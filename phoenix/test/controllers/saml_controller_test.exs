@@ -1,39 +1,21 @@
 defmodule LoginProxy.SamlControllerTest do
   use LoginProxy.ConnCase
-  require LoginProxy.Records
-  alias LoginProxy.Records
   alias LoginProxy.HttpMock
-
-  defp esaml_env(key) do
-    Application.get_env(:login_proxy, :esaml)[key]
-  end
 
   setup %{conn: conn} do
     {:ok, _} = HttpMock.start()
-
-    priv_key = :esaml_util.load_private_key(esaml_env(:key_file) |> to_charlist)
-    cert = :esaml_util.load_certificate(esaml_env(:cert_file) |> to_charlist)
-    base = esaml_env(:base) |> to_charlist
-    fingerprints = ['C9:AF:D5:C0:45:11:81:A8:A6:3C:20:6E:E1:31:D0:68:08:44:96:7F']
-    sp = :esaml_sp.setup(Records.esaml_sp(
-      key: priv_key,
-      certificate: cert,
-      trusted_fingerprints: fingerprints,
-      idp_signs_envelopes: false,
-      consume_uri: base ++ '/saml/consume',
-      metadata_uri: 'jamclm.sap.com',
-      org: Records.esaml_org(
-        name: 'SAP JAM CLM',
-        displayname: 'Kora',
-        url: base
-      ),
-      tech: Records.esaml_contact(
-        name: 'Ben Yip',
-        email: 'b.yip@sap.com'
-      )
-    ))
+    {:ok, sp, _idp} = LoginProxy.EsamlSetup.setup_esaml()
     conn = Plug.Conn.assign(conn, :sp, sp)
     {:ok, conn: conn}
+  end
+
+  test "AuthnRequest", %{conn: conn} do
+    conn = get conn, "/auth/logout"
+    conn = get conn, "/"
+    assert redirected_to(conn) =~ ~r{/auth/saml\?RelayState=.+}
+    # Follow redirect.
+    conn = get conn, redirected_to(conn)
+    assert redirected_to(conn) =~ ~r{https://accounts400.sap.com/saml2/idp/sso/accounts.sap.com\?.*SAMLRequest=.+}
   end
 
   test "Consume SAML response", %{conn: conn} do

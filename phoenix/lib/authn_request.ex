@@ -19,7 +19,7 @@ defmodule LoginProxy.AuthnRequest do
       "ProtocolBinding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
       "IssueInstant": stamp,
       "Version": "2.0",
-      "ID": "CLM-" <> (:uuid.uuid1() |> :uuid.to_string() |> to_string),
+      "ID": "CLM-" <> (:uuid.uuid4() |> :uuid.to_string() |> to_string),
       "xmlns:samlp": "urn:oasis:names:tc:SAML:2.0:protocol",
       "xmlns:saml": "urn:oasis:names:tc:SAML:2.0:assertion"},
       [

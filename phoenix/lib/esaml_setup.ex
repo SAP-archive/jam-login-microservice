@@ -34,7 +34,7 @@ defmodule LoginProxy.EsamlSetup do
     ))
 
     # Read IDP's metadata
-    idp = :esaml_util.load_metadata(esaml_env(:idp_metadata_url) |> to_charlist)
+    idp = Application.get_env(:login_proxy, :esaml)[:esaml_util].load_metadata(esaml_env(:idp_metadata_url) |> to_charlist)
 
     #Logger.debug("sp, idp: \n" <> inspect(sp) <> "\n\n" <> inspect(idp))
     {:ok, sp, idp}

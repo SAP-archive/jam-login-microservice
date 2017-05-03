@@ -19,4 +19,5 @@ config :login_proxy, :remote_app,
 config :login_proxy, :http_request_module, LoginProxy.HttpMock
 
 config :login_proxy, :esaml,
-  allow_stale: true
+  allow_stale: true,
+  esaml_util: LoginProxy.Test.EsamlUtil

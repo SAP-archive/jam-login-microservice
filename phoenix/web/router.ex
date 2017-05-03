@@ -9,7 +9,7 @@ defmodule LoginProxy.Router do
     plug :put_secure_browser_headers
     plug LoginProxy.SetTenant
     plug LoginProxy.Authenticate,
-      no_auth_paths: ~w(/auth/login /auth/logout /auth/saml /auth/saml_consume /auth/saml_metadata)
+      no_auth_paths: ~w(/health /auth/login /auth/logout /auth/saml /auth/saml_consume /auth/saml_metadata)
   end
 
   pipeline :api do
@@ -26,6 +26,12 @@ defmodule LoginProxy.Router do
     get "/", PageController, :index
   end
 
+  scope "/health", LoginProxy do
+    pipe_through :browser
+
+    get "/", HealthController, :health
+  end
+
   scope "/auth", LoginProxy do
     pipe_through :browser
 
@@ -37,7 +43,7 @@ defmodule LoginProxy.Router do
     get "/logout", SamlController, :logout
   end
 
-  # API: Ensure loging, then forward to the API server.
+  # API: Ensure login, then forward to the API server.
   scope "/api", LoginProxy do
     pipe_through :api
 

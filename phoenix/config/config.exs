@@ -24,7 +24,8 @@ config :login_proxy, :esaml,
   key_file: Path.join([Mix.Project.build_path, "..", "..", "JAM_CLM_KEY.pem"]),
   cert_file: Path.join([Mix.Project.build_path, "..", "..", "JAM_CLM.pem"]),
   idp_metadata_url: "https://accounts400.sap.com/saml2/metadata/accounts.sap.com",
-  allow_stale: false
+  allow_stale: false,
+  esaml_util: :esaml_util
 
 config :login_proxy, :redis,
   pool_size: 5,

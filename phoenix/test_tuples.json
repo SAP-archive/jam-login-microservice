@@ -1,0 +1,14 @@
+[
+  [
+    "test_healthcheck",
+    "get",
+    "/health",
+    [],
+    [],
+    200,
+    {
+      "web": true,
+      "redis": true
+    }
+  ]
+]
