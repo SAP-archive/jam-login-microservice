@@ -9,6 +9,7 @@ defmodule LoginProxy.Mixfile do
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
+     test_coverage: [tool: ExCoveralls],
      deps: deps()]
   end
 
@@ -41,6 +42,7 @@ defmodule LoginProxy.Mixfile do
      {:joken, "~> 1.4"},
      {:xml_builder, "~> 0.0.6"},
      {:junit_formatter, "~> 1.3", only: [:test]},
+     {:excoveralls, "~> 0.6", only: :test},
      {:cowboy, "~> 1.0", override: true}] # esaml dependency. version mismatch.
   end
 end
