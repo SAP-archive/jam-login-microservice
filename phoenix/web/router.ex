@@ -39,7 +39,6 @@ defmodule LoginProxy.Router do
     get "/saml_metadata", SamlController, :metadata
     post "/saml_consume", SamlController, :consume
 
-    get "/login", SamlController, :login # TODO: Remove after saml works
     get "/logout", SamlController, :logout
   end
 

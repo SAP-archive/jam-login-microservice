@@ -8,7 +8,7 @@ defmodule LoginProxy.PageControllerTest do
   end
 
   test "GET /login_proxy", %{conn: conn} do
-    conn = get conn, "/auth/login"
+    conn = LoginProxy.LoginMock.login(conn)
     conn = get conn, "/login_proxy"
     assert html_response(conn, 200) =~ "Welcome to Phoenix!"
   end

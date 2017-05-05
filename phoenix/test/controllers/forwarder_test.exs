@@ -15,7 +15,7 @@ defmodule LoginProxy.ForwarderTest do
       headers: %{hdrs: [{"content-type", "text/html"}]}
     })
 
-    conn = get conn, "/auth/login"
+    conn = LoginProxy.LoginMock.login(conn)
     conn = get conn, "/job/ConversationServiceBuild/"
     assert html_response(conn, 200) =~ "ConversationServiceBuild"
     # Validate that a GET request to the url was made internally
@@ -41,7 +41,7 @@ defmodule LoginProxy.ForwarderTest do
       headers: %{hdrs: [{"content-type", "application/json"}]}
     })
 
-    conn = get conn, "/auth/login"
+    conn = LoginProxy.LoginMock.login(conn)
     conn = get conn, "/api/v1/testing/api"
     assert json_response(conn, 200) == %{"results" => [1,2,3]}
     # Validate that a GET request to the url was made internally
