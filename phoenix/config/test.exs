@@ -21,3 +21,6 @@ config :login_proxy, :http_request_module, LoginProxy.HttpMock
 config :login_proxy, :esaml,
   allow_stale: true,
   esaml_util: LoginProxy.Test.EsamlUtil
+
+config :junit_formatter,
+  report_dir: Path.join([Mix.Project.build_path, "..", "..", "test", "reports"])
