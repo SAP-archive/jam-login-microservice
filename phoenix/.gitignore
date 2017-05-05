@@ -4,7 +4,7 @@
 /deps
 /*.ez
 /test/testcases/*.json
-/test/reports/*
+/test/reports/*.xml
 /cover/*
 
 # Generated on crash by the VM
