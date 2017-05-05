@@ -10,6 +10,7 @@ RUN adduser --disabled-password --gecos '' elixir && \
 
 USER elixir
 ARG MIX_ENV
+ARG TEST_REPORT
 RUN mix local.hex --force && mix local.rebar --force && mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new-$PHOENIX_VERSION.ez 
 
 COPY phoenix/mix.* /app/current/

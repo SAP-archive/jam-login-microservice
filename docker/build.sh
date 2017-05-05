@@ -62,8 +62,14 @@ fi
 for BUILD_ENV in ${BUILD_ENVS[@]}; do
 
     IMAGE_NAME=clm-loginproxy-${BUILD_ENV}
+    if [ "$BUILD_ENV" == "test" ]; then
+      REPORT_OPTION="--build-arg TEST_REPORT=1"
+    else
+      REPORT_OPTION=""
+    fi
 
     docker build $PROXY_ARGS \
         --build-arg MIX_ENV=$BUILD_ENV \
+        $REPORT_OPTION \
         -t $REGISTRY/$IMAGE_NAME -f $DOCKERDIR/Dockerfile $WORKDIR
 done
