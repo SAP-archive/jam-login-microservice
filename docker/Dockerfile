@@ -10,8 +10,7 @@ RUN adduser --disabled-password --gecos '' elixir && \
 
 USER elixir
 ARG MIX_ENV
-ARG TEST_REPORT
-RUN mix local.hex --force && mix local.rebar --force && mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new-$PHOENIX_VERSION.ez 
+RUN mix local.hex --force && mix local.rebar --force && mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new-$PHOENIX_VERSION.ez
 
 COPY phoenix/mix.* /app/current/
 COPY phoenix/config /app/current/config
@@ -26,8 +25,7 @@ COPY phoenix/test /app/current/test
 COPY phoenix/web /app/current/web
 COPY phoenix/coveralls.json /app/current/
 COPY phoenix/test_tuples.json /app/current/
-COPY phoenix/*.pem /app/current/
-USER root
+COPY phoenix/*.pem /app/current/USER root
 RUN chown -R elixir:elixir /app/current 
 USER elixir
 RUN mix compile

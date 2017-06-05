@@ -1,0 +1,13 @@
+login_proxy:
+  image: clm-registry.mo.sap.corp:5000/clm-loginproxy-dev
+  links:
+  - redis
+  volumes:
+  - ../phoenix:/app/current
+  ports:
+  - "4050:4000"
+redis:
+  image: redis:3.0
+  ports:
+  - "6379:6379"
+
