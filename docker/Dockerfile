@@ -25,7 +25,8 @@ COPY phoenix/test /app/current/test
 COPY phoenix/web /app/current/web
 COPY phoenix/coveralls.json /app/current/
 COPY phoenix/test_tuples.json /app/current/
-COPY phoenix/*.pem /app/current/USER root
+COPY phoenix/*.pem /app/current/
+USER root
 RUN chown -R elixir:elixir /app/current 
 USER elixir
 RUN mix compile
