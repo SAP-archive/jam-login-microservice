@@ -31,7 +31,7 @@ defmodule LoginProxy do
   defp redix_workers do
     config = Application.get_env(:login_proxy, :redis)
     for i <- 0..(config[:pool_size] -1) do
-      worker(Redix, [config[:redix], [name: :"redix_#{i}"]], id: {Redix, i})
+      worker(Redix, [Application.get_env(:login_proxy, :redix), [name: :"redix_#{i}"]], id: {Redix, i})
     end
   end
 end

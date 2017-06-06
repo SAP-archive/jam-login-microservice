@@ -16,6 +16,7 @@ config :login_proxy, LoginProxy.Endpoint,
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
+  handle_sasl_reports: true,
   metadata: [:request_id]
 
 # esaml
@@ -29,11 +30,9 @@ config :login_proxy, :esaml,
 
 config :login_proxy, :redis,
   pool_size: 5,
-  key_prefix: "LOGIN::PROXY::",
-  redix: [
-    host: System.get_env("REDIS_1_PORT_6379_TCP_ADDR") ||"localhost",
-    port: 6379
-  ]
+  key_prefix: "LOGIN::PROXY::"
+
+config :login_proxy, :redix, LoginProxy.Config.RedisDocker
 
 config :login_proxy, :remote_app,
   browser_server: [url: "http://browser.sapjam.com:8080"],

@@ -18,7 +18,7 @@ defmodule LoginProxy.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {LoginProxy, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy,
+     applications: [:dynamic_config, :phoenix, :phoenix_pubsub, :phoenix_html, :cowboy,
       :logger, :gettext, :esaml, :redix, :httpotion]]
   end
 
@@ -43,6 +43,7 @@ defmodule LoginProxy.Mixfile do
      {:xml_builder, "~> 0.0.6"},
      {:junit_formatter, "~> 1.3", only: [:test]},
      {:excoveralls, "~> 0.6", only: :test},
+     {:dynamic_config, github: "rhetzler/dynamic_config", ref: '51939f9f1c374af7bcf83e005044dfc06de2ac0f' },
      {:cowboy, "~> 1.0", override: true}] # esaml dependency. version mismatch.
   end
 end
