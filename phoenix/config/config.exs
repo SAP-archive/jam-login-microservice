@@ -34,9 +34,8 @@ config :login_proxy, :redis,
 
 config :login_proxy, :redix, LoginProxy.Config.RedisDocker
 
-config :login_proxy, :remote_app,
-  browser_server: [url: "http://browser.sapjam.com:8080"],
-  api_server: [url: "http://api.sapjam.com:8080"]
+config :login_proxy, :browser_server_url, {LoginProxy.Config.DownstreamDocker, "KORA_UI_PORT"}
+config :login_proxy, :api_server_url, {LoginProxy.Config.DownstreamDocker, "KORA_APP_API_PORT"}
 
 config :login_proxy, :http_request_module, HTTPotion
 

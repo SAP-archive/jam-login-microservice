@@ -32,6 +32,12 @@ defmodule LoginProxy.Router do
     get "/", HealthController, :health
   end
 
+  # TODO: Remove the /saml_consume scope once callback is fixed on SCI
+  scope "/saml_consume", LoginProxy do
+    pipe_through :browser
+    post "/", SamlController, :consume
+  end
+
   scope "/auth", LoginProxy do
     pipe_through :browser
 
@@ -46,13 +52,13 @@ defmodule LoginProxy.Router do
   scope "/api", LoginProxy do
     pipe_through :api
 
-    forward "/", ApiForwarder, [remote_app: :api_server]
+    forward "/", ApiForwarder, [remote_app_url: :api_server_url]
   end
 
   # Everthing else: Ensure login, then forward to the browser server.
   scope "/", LoginProxy do
     pipe_through :browser # Use the default browser stack
 
-    forward "/", BrowserForwarder, [remote_app: :browser_server]
+    forward "/", BrowserForwarder, [remote_app_url: :browser_server_url]
   end
 end

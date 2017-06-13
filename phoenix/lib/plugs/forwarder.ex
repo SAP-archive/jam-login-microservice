@@ -6,7 +6,7 @@ defmodule LoginProxy.Forwarder do
 
   def call(conn, opts) do
     # Get remote host and port
-    config = Application.get_env(:login_proxy, :remote_app) |> Keyword.get(opts[:remote_app])
+    remote_url = Application.get_env(:login_proxy, Keyword.get(opts, :remote_app_url))
 
     method = 
     case conn.method do
@@ -20,8 +20,8 @@ defmodule LoginProxy.Forwarder do
 
     url =
     case conn.query_string do
-      "" -> config[:url] <> conn.request_path
-      query -> config[:url] <> conn.request_path <> "?" <> query
+      "" -> remote_url <> conn.request_path
+      query -> remote_url <> conn.request_path <> "?" <> query
     end
 
     {:ok, body, conn} = read_body(conn)

@@ -20,7 +20,7 @@ defmodule LoginProxy.ForwarderTest do
     assert html_response(conn, 200) =~ "ConversationServiceBuild"
     # Validate that a GET request to the url was made internally
     request = HttpMock.get_request()
-    assert %{method: :get, url: "http://browser.sapjam.com/job/ConversationServiceBuild/"} = request
+    assert %{method: :get, url: "http://localhost:4050/job/ConversationServiceBuild/"} = request
     assert request.headers[:authentication] =~ "Bearer "
     token = request.headers[:authentication] |> String.split() |> Enum.at(1)
     user = LoginProxy.Jwt.verify_token(token)
@@ -46,7 +46,7 @@ defmodule LoginProxy.ForwarderTest do
     assert json_response(conn, 200) == %{"results" => [1,2,3]}
     # Validate that a GET request to the url was made internally
     request = HttpMock.get_request()
-    assert %{method: :get, url: "http://api.sapjam.com:8080/api/v1/testing/api"} = request
+    assert %{method: :get, url: "http://localhost:4030/api/v1/testing/api"} = request
     assert request.headers[:authentication] =~ "Bearer "
     token = request.headers[:authentication] |> String.split() |> Enum.at(1)
     user = LoginProxy.Jwt.verify_token(token)
