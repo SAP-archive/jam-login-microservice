@@ -7,9 +7,12 @@ defmodule LoginProxy.Endpoint do
   #
   # You should set gzip to true if you are running phoenix.digest
   # when deploying your static files in production.
-  plug Plug.Static,
-    at: "/", from: :login_proxy, gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+  #
+  # REMOVED static assets serving as it will be done in ui.
+  #
+  # plug Plug.Static,
+  #   at: "/", from: :login_proxy, gzip: false,
+  #   only: ~w(css fonts images js favicon.ico robots.txt)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
@@ -37,6 +40,9 @@ defmodule LoginProxy.Endpoint do
     store: :cookie,
     key: "_login_proxy_key",
     signing_salt: "JOeWNLOh"
+
+  # ui and other redirects go here. Add to map as needed.
+  plug LoginProxy.Redirects, %{"/" => "/ui", "/index.html" => "/ui/index.html"}
 
   plug LoginProxy.Router
 end

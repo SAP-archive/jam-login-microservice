@@ -56,17 +56,18 @@ defmodule LoginProxy.Router do
     get "/logout", SamlController, :logout
   end
 
-  # API: Ensure login, then forward to the API server.
-  scope "/api", LoginProxy do
+  # UI: Ensure login, then forward to the UI server.
+  # Note: we redirect "/" and some paths here. See LoginProxy.Endpoint module.
+  scope "/ui", LoginProxy do
+    pipe_through :browser
+
+    forward "/", BrowserForwarder, [remote_app_url: :browser_server_url]
+  end
+
+  # Everthing else: ensure login, then forward to the api server.
+  scope "/", LoginProxy do
     pipe_through :api
 
     forward "/", ApiForwarder, [remote_app_url: :api_server_url]
-  end
-
-  # Everthing else: Ensure login, then forward to the browser server.
-  scope "/", LoginProxy do
-    pipe_through :browser # Use the default browser stack
-
-    forward "/", BrowserForwarder, [remote_app_url: :browser_server_url]
   end
 end

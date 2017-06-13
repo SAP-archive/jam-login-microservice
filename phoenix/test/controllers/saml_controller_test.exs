@@ -9,9 +9,19 @@ defmodule LoginProxy.SamlControllerTest do
     {:ok, conn: conn}
   end
 
+  test "Redirect for root", %{conn: conn} do
+    conn = get conn, "/"
+    assert redirected_to(conn) =~ ~r{^/ui$}
+  end
+
+  test "Redirect for index.html", %{conn: conn} do
+    conn = get conn, "/index.html"
+    assert redirected_to(conn) =~ ~r{^/ui/index.html$}
+  end
+
   test "AuthnRequest", %{conn: conn} do
     conn = get conn, "/auth/logout"
-    conn = get conn, "/"
+    conn = get conn, "/job"
     assert redirected_to(conn) =~ ~r{/auth/saml\?RelayState=.+}
     # Follow redirect.
     conn = get conn, redirected_to(conn)
