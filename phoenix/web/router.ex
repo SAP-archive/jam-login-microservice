@@ -9,7 +9,15 @@ defmodule LoginProxy.Router do
     plug :put_secure_browser_headers
     plug LoginProxy.SetTenant
     plug LoginProxy.Authenticate,
-      no_auth_paths: ~w(/health /auth/login /auth/logout /auth/saml /auth/saml_consume /auth/saml_metadata)
+      no_auth_paths: ~w(/health)
+  end
+
+  pipeline :auth do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :put_secure_browser_headers
+    plug LoginProxy.SetTenant
+    plug LoginProxy.SetupSp
   end
 
   pipeline :api do
@@ -34,12 +42,12 @@ defmodule LoginProxy.Router do
 
   # TODO: Remove the /saml_consume scope once callback is fixed on SCI
   scope "/saml_consume", LoginProxy do
-    pipe_through :browser
+    pipe_through :auth
     post "/", SamlController, :consume
   end
 
   scope "/auth", LoginProxy do
-    pipe_through :browser
+    pipe_through :auth
 
     get "/saml", SamlController, :auth
     get "/saml_metadata", SamlController, :metadata

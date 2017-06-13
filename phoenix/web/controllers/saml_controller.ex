@@ -35,6 +35,7 @@ defmodule LoginProxy.SamlController do
     allow_stale_response = Application.get_env(:login_proxy, :esaml)[:allow_stale]
     case LoginProxy.SamlVerify.validate_assertion(xml, fn _x, _y -> :ok end, conn.assigns.sp, allow_stale_response) do
       {:error, reason} ->
+        Logger.error("SAML verify failed. Returning 403.")
         conn
         |> put_status(403)
         |> text("Access denied, assertion failed validation: " <> inspect(reason))

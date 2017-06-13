@@ -21,7 +21,7 @@ config :logger, :console,
 
 # esaml
 config :login_proxy, :esaml,
-  base: "http://some.kora.sapkora.com",
+  base: "http://jam.test2.sapkora.ca",
   key_file: Path.join([Mix.Project.build_path, "..", "..", "JAM_CLM_KEY.pem"]),
   cert_file: Path.join([Mix.Project.build_path, "..", "..", "JAM_CLM.pem"]),
   idp_metadata_url: "https://accounts400.sap.com/saml2/metadata/accounts.sap.com",

@@ -6,8 +6,6 @@ defmodule LoginProxy.Authenticate do
 
 
   def call(conn, opts) do
-    {:ok, sp, idp} = LoginProxy.EsamlSetup.setup_esaml()
-
     {authenticated, conn} = get_authenticated_user(conn)
     if authenticated || no_auth_path?(conn, opts) do
       # Generate auth header with JWT containing logged in user
@@ -17,10 +15,6 @@ defmodule LoginProxy.Authenticate do
       else
         conn
       end
-
-      conn
-      |> assign(:sp, sp)
-      |> assign(:idp, idp)
     else
       # Save current path in Redis
       relay_state = save_current_path(conn.request_path)
