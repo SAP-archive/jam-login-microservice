@@ -5,6 +5,7 @@ login_proxy_test:
   environment:
    - MIX_ENV=test
    - TEST_REPORT=true
+   - JWT_SECRET=g4AhQAENOGwB3zcAvg-nFDUhuPivAggFEMRcYLo8V5rrClX7UFJ5iX2yU1GEJI202HTS7_TBRTwWhgOTHnvwFA
   command: mix test
   volumes:
    - ../phoenix/test/reports:/app/current/test/reports

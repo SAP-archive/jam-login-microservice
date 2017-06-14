@@ -39,8 +39,7 @@ config :login_proxy, :api_server_url, {LoginProxy.Config.DownstreamDocker, "KORA
 
 config :login_proxy, :http_request_module, HTTPotion
 
-config :login_proxy, :jwt,
-  hs256_secret: "g4AhQAENOGwB3zcAvg-nFDUhuPivAggFEMRcYLo8V5rrClX7UFJ5iX2yU1GEJI202HTS7_TBRTwWhgOTHnvwFA"
+config :login_proxy, :jwt_hs256_secret, {DynamicConfig.Env, "JWT_SECRET"}
 
 # This info could be provided by a service later on.
 config :login_proxy, tenants: [

@@ -10,7 +10,7 @@ defmodule LoginProxy.Jwt do
   def create_token(claims) do
     claims
     |> token()
-    |> with_signer(hs256(Application.get_env(:login_proxy, :jwt)[:hs256_secret]))
+    |> with_signer(hs256(Application.get_env(:login_proxy, :jwt_hs256_secret)))
     |> sign()
     |> get_compact()
   end
@@ -24,7 +24,7 @@ defmodule LoginProxy.Jwt do
   def verify_token(token) do
     token
     |> token()
-    |> with_signer(hs256(Application.get_env(:login_proxy, :jwt)[:hs256_secret]))
+    |> with_signer(hs256(Application.get_env(:login_proxy, :jwt_hs256_secret)))
     |> verify()
     |> get_claims()
   end

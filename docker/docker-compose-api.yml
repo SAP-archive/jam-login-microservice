@@ -5,6 +5,7 @@ service_prod:
   environment:
    - MIX_ENV=prod
    - PORT=4000
+   - JWT_SECRET=g4AhQAENOGwB3zcAvg-nFDUhuPivAggFEMRcYLo8V5rrClX7UFJ5iX2yU1GEJI202HTS7_TBRTwWhgOTHnvwFA
   volumes:
    - ../phoenix/test/testcases:/app/current/test/testcases   
 redis:

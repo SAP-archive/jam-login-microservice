@@ -2,6 +2,8 @@ login_proxy:
   image: clm-registry.mo.sap.corp:5000/clm-loginproxy-dev
   links:
   - redis
+  environment:
+  - JWT_SECRET=g4AhQAENOGwB3zcAvg-nFDUhuPivAggFEMRcYLo8V5rrClX7UFJ5iX2yU1GEJI202HTS7_TBRTwWhgOTHnvwFA
   volumes:
   - ../phoenix:/app/current
   ports:
