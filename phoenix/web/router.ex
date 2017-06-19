@@ -14,6 +14,10 @@ defmodule LoginProxy.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :put_secure_browser_headers
+    plug Plug.Parsers,
+      parsers: [:urlencoded, :multipart, :json],
+      pass: ["*/*"],
+      json_decoder: Poison
     plug LoginProxy.SetTenant
     plug LoginProxy.SetupSp
   end
@@ -53,13 +57,13 @@ defmodule LoginProxy.Router do
   scope "/ui", LoginProxy do
     pipe_through :browser
 
-    forward "/", BrowserForwarder, [remote_app_url: :browser_server_url]
+    forward "/", BrowserForwarder
   end
 
   # Everthing else: ensure login, then forward to the api server.
   scope "/", LoginProxy do
     pipe_through :api
 
-    forward "/", ApiForwarder, [remote_app_url: :api_server_url]
+    forward "/", ApiForwarder
   end
 end

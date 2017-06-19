@@ -5,8 +5,7 @@ defmodule LoginProxy.Forwarder do
   import Plug.Conn
 
   def call(conn, opts) do
-    # Get remote host and port
-    remote_url = Application.get_env(:login_proxy, Keyword.get(opts, :remote_app_url))
+    remote_url = opts[:remote_url]
 
     method = 
     case conn.method do

@@ -25,10 +25,8 @@ defmodule LoginProxy.Endpoint do
   plug Plug.RequestId
   plug Plug.Logger
 
-  plug Plug.Parsers,
-    parsers: [:urlencoded, :multipart, :json],
-    pass: ["*/*"],
-    json_decoder: Poison
+  # Do not parse the body by default. Do it only in routes that need it.
+  # Plug.Parsers removed from here.
 
   plug Plug.MethodOverride
   plug Plug.Head
