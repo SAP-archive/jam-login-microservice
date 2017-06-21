@@ -7,8 +7,14 @@ defmodule LoginProxy.ErrorView do
   end
 
   def render("500.html", assigns) do
-    Logger.error "Internal server error: #{inspect(assigns)}"
-    "Internal server error"
+    try do
+      Logger.error "500 Internal server error. Trying to inspect reason."
+      Logger.error "500 Internal server error. Reason keys: #{inspect(Map.keys(assigns))}"
+      Logger.error "Internal server error: #{inspect(assigns)}"
+      "Internal server error"
+    rescue
+      _ -> "Internal server error"
+    end
   end
 
   # In case no render clause matches or no
