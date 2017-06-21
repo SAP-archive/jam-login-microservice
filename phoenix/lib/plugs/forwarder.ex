@@ -23,15 +23,15 @@ defmodule LoginProxy.Forwarder do
       query -> remote_url <> conn.request_path <> "?" <> query
     end
 
-    {:ok, body, conn} = read_body(conn)
+    {body, conn} = read_full_body(conn)
 
     headers = for {key, value} <- conn.req_headers do
       {String.to_atom(key), value}
     end
 
-    Logger.debug "Forwarding request. method, url, headers, body: \n" <>
+    Logger.debug "Forwarding request. method, url, headers, body size: \n" <>
     inspect(method) <> "\n" <> inspect(url) <> "\n" <> inspect(headers) <> "\n" <>
-    inspect(body) <> "\n\n"
+    inspect(byte_size(body)) <> "\n\n"
 
     response =
     Application.get_env(:login_proxy, :http_request_module).request(method, url, [
@@ -51,4 +51,17 @@ defmodule LoginProxy.Forwarder do
     |> send_resp(resp_status, resp_body || "")
     |> halt
   end
+
+  defp read_full_body(conn) do
+    case read_body(conn) do
+      {:ok, body, conn} ->
+        {body, conn}
+      {:more, partial_body, conn} ->
+        {body, conn} = read_full_body(conn)
+        {partial_body <> body, conn}
+      {:error, reason} ->
+        raise inspect(reason)
+    end
+  end
+
 end

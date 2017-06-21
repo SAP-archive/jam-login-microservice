@@ -1,15 +1,30 @@
 login_proxy:
-  image: clm-registry.mo.sap.corp:5000/clm-loginproxy-dev
+  image: clm-registry.mo.sap.corp:5000/clm-loginproxy-prod
   links:
   - redis
+  - kora_app_api
   environment:
   - JWT_SECRET=g4AhQAENOGwB3zcAvg-nFDUhuPivAggFEMRcYLo8V5rrClX7UFJ5iX2yU1GEJI202HTS7_TBRTwWhgOTHnvwFA
-  volumes:
-  - ../phoenix:/app/current
+  - MIX_ENV=prod
+  - PORT=4000
   ports:
   - "4050:4000"
 redis:
   image: redis:3.0
+  # ports:
+  # - "6379:6379"
+mongo:
+  image: mongo:3.4
+  # ports:
+  # - "27017:27017"
+kora_app_api: # actually kora_data for testing uploads
+  image: clm-registry.mo.sap.corp:5000/clm-koradata-prod
+  links:
+  - redis
+  - mongo
   ports:
-  - "6379:6379"
+  - "4040:4000"
+  environment:
+  - MIX_ENV=prod
+  - PORT=4000
 
