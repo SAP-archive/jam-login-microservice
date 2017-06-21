@@ -11,13 +11,11 @@ defmodule LoginProxy.ErrorViewTest do
 
   test "render 500.html" do
     assert render_to_string(LoginProxy.ErrorView, "500.html", []) ==
-           #"Internal server error"
-           "Internal server error\n%{view_module: LoginProxy.ErrorView, view_template: &quot;500.html&quot;}"
+           "Internal server error"
   end
 
   test "render any other" do
     assert render_to_string(LoginProxy.ErrorView, "505.html", []) ==
-           #"Internal server error"
-           "Internal server error\n%{template_not_found: LoginProxy.ErrorView, view_module: LoginProxy.ErrorView, view_template: &quot;505.html&quot;}"
+           "Internal server error"
   end
 end

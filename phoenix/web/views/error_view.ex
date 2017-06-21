@@ -1,12 +1,14 @@
 defmodule LoginProxy.ErrorView do
   use LoginProxy.Web, :view
+  require Logger
 
   def render("404.html", _assigns) do
     "Page not found"
   end
 
   def render("500.html", assigns) do
-    "Internal server error\n#{inspect(assigns)}"
+    Logger.error "Internal server error: #{inspect(assigns)}"
+    "Internal server error"
   end
 
   # In case no render clause matches or no
