@@ -29,6 +29,7 @@ defmodule LoginProxy.SamlControllerTest do
   end
 
   test "Consume SAML response", %{conn: conn} do
+    saved_conn = conn
     {:ok, saml_response} = File.read "test/fixtures/sample_response.txt"
     relay_state = LoginProxy.Authenticate.save_current_url(conn)
     conn = get conn, "/auth/logout"
@@ -36,7 +37,19 @@ defmodule LoginProxy.SamlControllerTest do
       "SAMLResponse" => saml_response,
       "RelayState" => relay_state
     }
-    assert html_response(conn, 302) =~ "<html><body>You are being <a href=\"http://www.example.com/\">redirected</a>.</body></html>"
+    assert html_response(conn, 302) =~ ~r{^<html><body>You are being <a href="http://www.example.com/\?RelayState=[0-9a-f-]+">redirected</a>.</body></html>$}
+    # Folow redirect
+    location = Plug.Conn.get_resp_header(conn, "location") |> Enum.at(0)
+
+    HttpMock.set_response(%{
+      status_code: 200,
+      body: "<html><body>ConversationServiceBuild</body></html>",
+      headers: %{hdrs: [{"content-type", "text/html"}]}
+    })
+
+    location = String.replace(location, "?", "hello?") # pick a useful location instead of "/"
+    conn = get saved_conn, location
+    # Now it should have a session
     assert Plug.Conn.get_session(conn, :session_id) =~ ~r/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
     # Now that we have authenticated, let's try to forward a request

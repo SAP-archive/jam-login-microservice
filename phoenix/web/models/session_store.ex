@@ -26,7 +26,7 @@ defmodule LoginProxy.SessionStore do
       {:ok, value} ->
         refresh(key)
         try do
-          Poison.decode!(value)
+          {:ok, Poison.decode!(value)}
         rescue
           error -> Logger.error("SessionStore: Poison.decode! error: "
             <> inspect(error) <> " for key,value " <> inspect(key) <> ", " <> inspect(value))

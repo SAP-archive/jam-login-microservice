@@ -15,7 +15,7 @@ defmodule LoginProxy.SessionStore.Test do
   test "store session" do
     assert :ok == SessionStore.save("alpha",
       %{"email" => "alpha@bmail.com", "firstname" => "alpha", "lastname" => "tset"})
-    assert %{"email" => "alpha@bmail.com", "firstname" => "alpha", "lastname" => "tset"} =
+    assert {:ok, %{"email" => "alpha@bmail.com", "firstname" => "alpha", "lastname" => "tset"}} =
       SessionStore.load("alpha")
   end
 end

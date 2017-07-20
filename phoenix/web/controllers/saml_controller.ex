@@ -48,20 +48,20 @@ defmodule LoginProxy.SamlController do
         username = assertion |> Records.esaml_assertion(:subject) |> Records.esaml_subject(:name) |> to_string
         Logger.debug "username, email, first, last: \n" <> "#{username}, #{email}, #{firstname}, #{lastname}"
         # Save session
-        uuid = :uuid.uuid4() |> :uuid.to_string() |> to_string
-        :ok = LoginProxy.SessionStore.save(uuid, 
+        session_uuid = :uuid.uuid4() |> :uuid.to_string() |> to_string
+        :ok = LoginProxy.SessionStore.save(session_uuid,
           %{"username" => username, "email" => email, "firstname" => firstname, "lastname" => lastname})
-        conn = put_session(conn, :session_id, uuid)
         # Get saved request path
-        key = LoginProxy.Authenticate.relay_state_key(params["RelayState"])
-        Logger.debug "Getting original url from RelayState: " <> inspect(params["RelayState"])
+        relay_state = params["RelayState"]
+        Logger.debug "Getting original url from RelayState: " <> inspect(relay_state)
         redirect_path =
-        case LoginProxy.Redis.command(["GET", key]) do
-          {:ok, redirect_path} ->
-            {:ok, _} = LoginProxy.Redis.command(["DEL", key])
-            redirect_path
-          {:error, reason} ->
-            Logger.error("Relay state load failed: " <> reason)
+        with {:ok, url} <- LoginProxy.RelayState.load(relay_state) do
+          # Save session uuid instead in relay_state for deferred cookie setting
+          LoginProxy.RelayState.save(relay_state, session_uuid)
+          url <> "?RelayState=#{relay_state}"
+        else
+          _ ->
+            Logger.error("Relay state load failed for key: #{relay_state}")
             "/"
         end
         Logger.debug "Redirecting to original URL: " <> inspect(redirect_path)
