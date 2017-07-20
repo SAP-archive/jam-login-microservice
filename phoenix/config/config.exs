@@ -41,16 +41,20 @@ config :login_proxy, :http_request_module, HTTPotion
 
 config :login_proxy, :jwt_hs256_secret, {DynamicConfig.Env, "JWT_SECRET"}
 
-# This info could be provided by a service later on.
+# tenant info could be provided by a service later on.
+# Until then:
+# hostname = server <> sub_domain
+# where sub_domain is either blank or starts with "."
+config :login_proxy, :sub_domain, ""
 config :login_proxy, tenants: [
   %{
-    hostname: "jam.test2.sapkora.ca",
+    server: "localhost",
     name: "Tenant1",
     uuid: "50c5a290-146d-4d54-944c-1bfad270718d",
     service_provider_issuer: "issuer1"
   },
   %{
-    hostname: "qa.test2.sapkora.ca",
+    server: "qalocalhost",
     name: "QA Tenant",
     uuid: "c75ebed8-b329-4584-afc9-fbc9549e9646",
     service_provider_issuer: "issuer1"

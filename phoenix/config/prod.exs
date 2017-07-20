@@ -56,6 +56,24 @@ config :logger, level: :debug
 #     config :login_proxy, LoginProxy.Endpoint, server: true
 #
 
+# Tenant info
+# sub_domain is something like ".test2.sapkora.ca"
+config :login_proxy, :sub_domain, {DynamicConfig.Env, "SUB_DOMAIN"}
+config :login_proxy, tenants: [
+  %{
+    server: "jam",
+    name: "Tenant1",
+    uuid: "50c5a290-146d-4d54-944c-1bfad270718d",
+    service_provider_issuer: "issuer1"
+  },
+  %{
+    server: "qa",
+    name: "QA Tenant",
+    uuid: "c75ebed8-b329-4584-afc9-fbc9549e9646",
+    service_provider_issuer: "issuer1"
+  },
+]
+
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
 #import_config "prod.secret.exs"

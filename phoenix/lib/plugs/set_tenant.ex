@@ -8,7 +8,8 @@ defmodule LoginProxy.SetTenant do
     # Get hostname from http request
     hostname = conn.host
     Logger.info "Host in request is: " <> hostname
-    tenant = Enum.find(Application.get_env(:login_proxy, :tenants), fn t -> t.hostname == hostname end)
+    sub_domain = Application.get_env(:login_proxy, :sub_domain)
+    tenant = Enum.find(Application.get_env(:login_proxy, :tenants), fn t -> t.server <> sub_domain == hostname end)
     {tenant_uuid, issuer} = case tenant do
       nil -> {"UNKNOWN", nil}
       t -> {t.uuid, t.service_provider_issuer}
