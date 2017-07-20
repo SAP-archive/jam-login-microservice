@@ -1,11 +1,13 @@
 defmodule LoginProxy.SetTenant do
   import Plug.Conn
+  require Logger
 
   def init(opts), do: opts
 
   def call(conn, _opts) do
     # Get hostname from http request
-    hostname = "host1.com" # TODO: fix me
+    hostname = conn.host
+    Logger.info "Host in request is: " <> hostname
     tenant = Enum.find(Application.get_env(:login_proxy, :tenants), fn t -> t.hostname == hostname end)
     {tenant_uuid, issuer} = case tenant do
       nil -> {"UNKNOWN", nil}

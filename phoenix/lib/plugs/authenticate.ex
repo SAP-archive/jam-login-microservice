@@ -16,8 +16,8 @@ defmodule LoginProxy.Authenticate do
         conn
       end
     else
-      # Save current path in Redis
-      relay_state = save_current_path(conn.request_path)
+      # Save current url in Redis
+      relay_state = save_current_url(conn)
       # Redirect
       Logger.debug "Redirecting to: " <> "/auth/saml?RelayState=#{relay_state}"
       Phoenix.Controller.redirect(conn, external: "/auth/saml?RelayState=#{relay_state}")
@@ -25,11 +25,13 @@ defmodule LoginProxy.Authenticate do
     end
   end
 
-  def save_current_path(path) do
-    Logger.debug "Saving RelayState with url: " <> path
+  def save_current_url(conn) do
+    port = if conn.port == 80, do: "", else: ":" <> to_string(conn.port)
+    url = to_string(conn.scheme) <> "://" <> conn.host <> port <> conn.request_path
+    Logger.info "Saving RelayState with url: " <> url
     relay_state = :uuid.uuid4() |> :uuid.to_string() |> to_string
     key = relay_state_key(relay_state)
-    {:ok, "OK"} = LoginProxy.Redis.command(["SET", key, path])
+    {:ok, "OK"} = LoginProxy.Redis.command(["SET", key, url])
     relay_state
   end
 

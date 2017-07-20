@@ -30,13 +30,13 @@ defmodule LoginProxy.SamlControllerTest do
 
   test "Consume SAML response", %{conn: conn} do
     {:ok, saml_response} = File.read "test/fixtures/sample_response.txt"
-    relay_state = LoginProxy.Authenticate.save_current_path("/original")
+    relay_state = LoginProxy.Authenticate.save_current_url(conn)
     conn = get conn, "/auth/logout"
     conn = post conn, "/auth/saml_consume", %{
       "SAMLResponse" => saml_response,
       "RelayState" => relay_state
     }
-    assert html_response(conn, 302) =~ "<html><body>You are being <a href=\"/original\">redirected</a>.</body></html>"
+    assert html_response(conn, 302) =~ "<html><body>You are being <a href=\"http://www.example.com/\">redirected</a>.</body></html>"
     assert Plug.Conn.get_session(conn, :session_id) =~ ~r/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
     # Now that we have authenticated, let's try to forward a request

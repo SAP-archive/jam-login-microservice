@@ -44,16 +44,16 @@ config :login_proxy, :jwt_hs256_secret, {DynamicConfig.Env, "JWT_SECRET"}
 # This info could be provided by a service later on.
 config :login_proxy, tenants: [
   %{
-    hostname: "host1.com",
+    hostname: "jam.test2.sapkora.ca",
     name: "Tenant1",
     uuid: "50c5a290-146d-4d54-944c-1bfad270718d",
     service_provider_issuer: "issuer1"
   },
   %{
-    hostname: "host2.com",
-    name: "Tenant2",
+    hostname: "qa.test2.sapkora.ca",
+    name: "QA Tenant",
     uuid: "c75ebed8-b329-4584-afc9-fbc9549e9646",
-    service_provider_issuer: "issuer2"
+    service_provider_issuer: "issuer1"
   },
 ]
 # Import environment specific config. This must remain at the bottom

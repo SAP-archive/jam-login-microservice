@@ -27,3 +27,12 @@ config :login_proxy, :jwt_hs256_secret, "cef2699914a2a9ae5c8e2314faceb35ebe9f206
 
 config :junit_formatter,
   report_dir: Path.join([Mix.Project.build_path, "..", "..", "test", "reports"])
+
+config :login_proxy, tenants: [
+  %{
+    hostname: "www.example.com",
+    name: "Tenant1",
+    uuid: "50c5a290-146d-4d54-944c-1bfad270718d",
+    service_provider_issuer: "issuer1"
+  }
+]
