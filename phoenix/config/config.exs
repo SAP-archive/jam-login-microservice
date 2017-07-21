@@ -8,7 +8,7 @@ use Mix.Config
 # Configures the endpoint
 config :login_proxy, LoginProxy.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "Rdg2H4RqfH6xKJW8DedHQ1lOJF4fYBMkj3HZ29DbE04KgRVJ6UeHASe7eL3Y+Gyx",
+  dynamic_config: LoginProxy.Config.EndpointDocker,
   render_errors: [view: LoginProxy.ErrorView, accepts: ~w(html json)],
   pubsub: [name: LoginProxy.PubSub,
            adapter: Phoenix.PubSub.PG2]

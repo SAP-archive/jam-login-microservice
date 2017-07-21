@@ -29,5 +29,22 @@ defmodule LoginProxy.Config do
       end
       Regex.replace(~r/^tcp/, downstream_port, "http")
     end
-  end    
+  end
+
+  defmodule EndpointDocker do
+    require Logger
+    @behaviour DynamicConfig
+
+    @doc """
+    EndpointDocker.get_config(keywords) -> [..., secret_key_base: "topsecreteyesonlyconfidentialclassified"]
+    """
+    def get_config(keywords) do
+      secret_key_base = System.get_env("SECRET_KEY_BASE") || "anl9EKHChRcnatvdl0806ylOC5ftlI9B14nrDcWzm+A4pahpHwRXzjqQ60AnGGM1"
+      keywords
+      |> Keyword.delete(:dynamic_config)
+      |> Keyword.merge([
+        secret_key_base: secret_key_base
+      ])
+    end
+  end
 end
