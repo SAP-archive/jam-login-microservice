@@ -23,7 +23,7 @@ defmodule LoginProxy.Router do
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
+    plug :accepts, ["json","html"]
     plug :fetch_session
     plug LoginProxy.SetTenant
     plug LoginProxy.Authenticate
