@@ -39,11 +39,11 @@ defmodule LoginProxy.Mixfile do
      {:esaml, github: "arekinath/esaml"},
      {:redix, ">= 0.0.0"},
      {:httpotion, "~> 3.0.2"},
-     {:joken, "~> 1.4"},
      {:xml_builder, "~> 0.0.6"},
      {:junit_formatter, "~> 1.3", only: [:test]},
      {:excoveralls, "~> 0.6", only: :test},
      {:dynamic_config, github: "rhetzler/dynamic_config", ref: '51939f9f1c374af7bcf83e005044dfc06de2ac0f' },
+     {:korauth, git: "https://github.wdf.sap.corp/Jam-clm/korauth", tag: "0.2.2"},
      {:cowboy, "~> 1.0", override: true}] # esaml dependency. version mismatch.
   end
 end

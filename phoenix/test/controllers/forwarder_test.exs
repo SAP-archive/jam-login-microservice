@@ -23,7 +23,7 @@ defmodule LoginProxy.ForwarderTest do
     assert %{method: :get, url: "http://localhost:4050/ui/job/ConversationServiceBuild/"} = request
     assert request.headers[:authentication] =~ "Bearer "
     token = request.headers[:authentication] |> String.split() |> Enum.at(1)
-    user = LoginProxy.Jwt.verify_token(token)
+    assert {:ok, user} = KorAuth.Jwt.verify_token(token, Application.get_env(:login_proxy, :jwt_hs256_secret))
     assert %{"email" => _, "firstname" => _, "lastname" => _} = user
     assert "50c5a290-146d-4d54-944c-1bfad270718d" == request.headers[:tenant_uuid]
   end
@@ -49,7 +49,7 @@ defmodule LoginProxy.ForwarderTest do
     assert %{method: :get, url: "http://localhost:4030/testing/api"} = request
     assert request.headers[:authentication] =~ "Bearer "
     token = request.headers[:authentication] |> String.split() |> Enum.at(1)
-    user = LoginProxy.Jwt.verify_token(token)
+    assert {:ok, user} = KorAuth.Jwt.verify_token(token, Application.get_env(:login_proxy, :jwt_hs256_secret))
     assert %{"email" => _, "firstname" => _, "lastname" => _} = user
     assert "50c5a290-146d-4d54-944c-1bfad270718d" == request.headers[:tenant_uuid]
   end

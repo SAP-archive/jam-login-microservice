@@ -50,7 +50,7 @@ config :login_proxy, tenants: [
   %{
     server: "localhost",
     name: "Tenant1",
-    uuid: "50c5a290-146d-4d54-944c-1bfad270718d",
+    uuid: "dddddddd-1ab1-1bc1-1de1-ffffffffffff",
     service_provider_issuer: "issuer1"
   },
   %{

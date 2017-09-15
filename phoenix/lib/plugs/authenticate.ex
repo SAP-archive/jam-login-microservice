@@ -10,7 +10,7 @@ defmodule LoginProxy.Authenticate do
     if authenticated || no_auth_path?(conn, opts) do
       # Generate auth header with JWT containing logged in user
       conn = if Map.get(conn.assigns, :user) do
-        auth_header = "Bearer " <> LoginProxy.Jwt.create_token(conn.assigns.user)
+        auth_header = "Bearer " <> KorAuth.Jwt.create_token(conn.assigns.user, Application.get_env(:login_proxy, :jwt_hs256_secret))
         conn |> put_req_header("authentication", auth_header)
       else
         conn

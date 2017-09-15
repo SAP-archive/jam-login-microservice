@@ -66,7 +66,7 @@ defmodule LoginProxy.SamlControllerTest do
     #IO.puts "auth_header: " <> inspect(auth_header)
     assert auth_header =~ ~r/^Bearer /
     token = auth_header |> String.split() |> Enum.at(1)
-    user = LoginProxy.Jwt.verify_token(token)
+    {:ok, user} = KorAuth.Jwt.verify_token(token, Application.get_env(:login_proxy, :jwt_hs256_secret))
     assert %{"email" => "sudhir.rao01@sap.com", "firstname" => "Sudhir", "lastname" => "Rao", "username" => "I832806"} = user
   end
 end

@@ -12,9 +12,12 @@ USER elixir
 ARG MIX_ENV
 RUN mix local.hex --force && mix local.rebar --force && mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new-$PHOENIX_VERSION.ez
 
+COPY docker/SAPNetCA_G2.crt /usr/share/ca-certificates/SAP/
+
 COPY phoenix/mix.* /app/current/
 COPY phoenix/config /app/current/config
 USER root
+RUN echo "SAP/SAPNetCA_G2.crt" >> /etc/ca-certificates.conf && update-ca-certificates
 RUN chown -R elixir:elixir /app/current
 USER elixir
 RUN rebar3 update && mix deps.get && mix deps.compile
