@@ -49,14 +49,20 @@ config :login_proxy, idps: [
   %{
     server: "jam.test2.sapkora.ca",
     base: "http://jam.test2.sapkora.ca",
-    idp_metadata_url: "https://accounts400.sap.com/saml2/metadata/accounts.sap.com",
-    issuer: "jamclm.sap.com"
+    idp_metadata_url: "https://dev-jamclm.accounts400.ondemand.com/saml2/metadata/dev-jamclm.accounts400.ondemand.com",
+    issuer: "kora-test-jam.sap.com"
   },
   %{
     server: "qa.test2.sapkora.ca",
     base: "http://qa.test2.sapkora.ca",
     idp_metadata_url: "https://dev-jamclm.accounts400.ondemand.com/saml2/metadata/dev-jamclm.accounts400.ondemand.com",
     issuer: "kora-test-qa.sap.com"
+  },
+  %{
+    server: "actual-prod.test2.sapkora.ca",
+    base: "http://actual-prod.test2.sapkora.ca",
+    idp_metadata_url: "https://accounts400.sap.com/saml2/metadata/accounts.sap.com",
+    issuer: "jamclm.sap.com"
   },
 ]
 # tenant info could be provided by a service later on.
