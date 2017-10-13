@@ -21,10 +21,8 @@ config :logger, :console,
 
 # esaml
 config :login_proxy, :esaml,
-  base: "http://jam.test2.sapkora.ca",
   key_file: Path.join([Mix.Project.build_path, "..", "..", "JAM_CLM_KEY.pem"]),
   cert_file: Path.join([Mix.Project.build_path, "..", "..", "JAM_CLM.pem"]),
-  idp_metadata_url: "https://accounts400.sap.com/saml2/metadata/accounts.sap.com",
   allow_stale: false,
   esaml_util: :esaml_util
 
@@ -41,6 +39,26 @@ config :login_proxy, :http_request_module, HTTPotion
 
 config :login_proxy, :jwt_hs256_secret, {DynamicConfig.Env, "JWT_SECRET"}
 
+config :login_proxy, idps: [
+  %{
+    server: "localhost:4050",
+    base: "http://localhost:4050",
+    idp_metadata_url: "https://dev-jamclm.accounts400.ondemand.com/saml2/metadata/dev-jamclm.accounts400.ondemand.com",
+    issuer: "kora-dev.sap.com"
+  },
+  %{
+    server: "jam.test2.sapkora.ca",
+    base: "http://jam.test2.sapkora.ca",
+    idp_metadata_url: "https://accounts400.sap.com/saml2/metadata/accounts.sap.com",
+    issuer: "jamclm.sap.com"
+  },
+  %{
+    server: "qa.test2.sapkora.ca",
+    base: "http://qa.test2.sapkora.ca",
+    idp_metadata_url: "https://dev-jamclm.accounts400.ondemand.com/saml2/metadata/dev-jamclm.accounts400.ondemand.com",
+    issuer: "kora-test-qa.sap.com"
+  },
+]
 # tenant info could be provided by a service later on.
 # Until then:
 # hostname = server <> sub_domain

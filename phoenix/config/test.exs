@@ -37,3 +37,13 @@ config :login_proxy, tenants: [
     service_provider_issuer: "issuer1"
   }
 ]
+
+config :login_proxy, idps: [
+  %{
+    server: "www.example.com",
+    base: "http://jam.test2.sapkora.ca",
+    idp_metadata_url: "https://accounts400.sap.com/saml2/metadata/accounts.sap.com",
+    issuer: "jamclm.sap.com"
+  }
+]
+

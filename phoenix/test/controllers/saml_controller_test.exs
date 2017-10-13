@@ -4,7 +4,9 @@ defmodule LoginProxy.SamlControllerTest do
 
   setup %{conn: conn} do
     {:ok, _} = HttpMock.start()
-    {:ok, sp, _idp} = LoginProxy.EsamlSetup.setup_esaml()
+    {:ok, sp, _idp} = LoginProxy.EsamlSetup.setup_esaml(%{base: "http://jam.test2.sapkora.ca", 
+                     idp_metadata_url: "https://accounts400.sap.com/saml2/metadata/accounts.sap.com", 
+                     issuer: "jamclm.sap.com"})
     conn = Plug.Conn.assign(conn, :sp, sp)
     {:ok, conn: conn}
   end
