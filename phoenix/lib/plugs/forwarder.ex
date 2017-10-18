@@ -33,11 +33,14 @@ defmodule LoginProxy.Forwarder do
     inspect(method) <> "\n" <> inspect(url) <> "\n" <> inspect(headers) <> "\n" <>
     inspect(byte_size(body)) <> "\n\n"
 
+    # Increase timeout for post, put, patch requests to 2 minutes.
+    request_options = if method in [:get, :delete] do
+      [headers: headers, body: body]
+    else
+      [headers: headers, body: body, timeout: 120_000]
+    end
     response =
-    Application.get_env(:login_proxy, :http_request_module).request(method, url, [
-      headers: headers,
-      body: body
-    ])
+    Application.get_env(:login_proxy, :http_request_module).request(method, url, request_options)
 
     {resp_body, resp_headers, resp_status} =
     case Map.get(response, :message) do

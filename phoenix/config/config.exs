@@ -19,6 +19,8 @@ config :logger, :console,
   handle_sasl_reports: true,
   metadata: [:request_id]
 
+config :httpotion, :default_timeout, 30_000 # 30 seconds
+
 # esaml
 config :login_proxy, :esaml,
   key_file: Path.join([Mix.Project.build_path, "..", "..", "JAM_CLM_KEY.pem"]),

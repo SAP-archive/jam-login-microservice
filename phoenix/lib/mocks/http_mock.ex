@@ -61,15 +61,12 @@ defmodule LoginProxy.HttpMock do
   Returns whatever was set as the response.
   Also sets requested params so they can be read after the call.
   """
-  def request(method, url, [
-      headers: headers,
-      body: body
-    ]) do
+  def request(method, url, opts) do
     __MODULE__.set_request(%{
       method: method,
       url: url,
-      headers: headers,
-      body: body
+      headers: Keyword.get(opts, :headers),
+      body: Keyword.get(opts, :body)
       }
     )
     __MODULE__.get_response()
