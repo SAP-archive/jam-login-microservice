@@ -37,7 +37,10 @@ defmodule LoginProxy.Endpoint do
   plug Plug.Session,
     store: :cookie,
     key: "_login_proxy_key",
-    signing_salt: "JOeWNLOh"
+    signing_salt: "JOeWNLOh",
+    http_only: true,
+    secure: Application.get_env(:login_proxy, LoginProxy.Endpoint)[:secure_session]
+    
 
   # ui and other redirects go here. Add to map as needed.
   plug LoginProxy.Redirects, %{"/" => "/ui", "/index.html" => "/ui/index.html"}

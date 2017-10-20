@@ -11,6 +11,7 @@ config :login_proxy, LoginProxy.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
+  secure_session: false,
   watchers: []
 
 

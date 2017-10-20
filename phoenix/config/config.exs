@@ -50,13 +50,13 @@ config :login_proxy, idps: [
   },
   %{
     server: "jam.test2.sapkora.ca",
-    base: "http://jam.test2.sapkora.ca",
+    base: "https://jam.test2.sapkora.ca",
     idp_metadata_url: "https://dev-jamclm.accounts400.ondemand.com/saml2/metadata/dev-jamclm.accounts400.ondemand.com",
     issuer: "kora-test-jam.sap.com"
   },
   %{
     server: "qa.test2.sapkora.ca",
-    base: "http://qa.test2.sapkora.ca",
+    base: "https://qa.test2.sapkora.ca",
     idp_metadata_url: "https://dev-jamclm.accounts400.ondemand.com/saml2/metadata/dev-jamclm.accounts400.ondemand.com",
     issuer: "kora-test-qa.sap.com"
   },

@@ -40,10 +40,12 @@ defmodule LoginProxy.Config do
     """
     def get_config(keywords) do
       secret_key_base = System.get_env("SECRET_KEY_BASE") || "anl9EKHChRcnatvdl0806ylOC5ftlI9B14nrDcWzm+A4pahpHwRXzjqQ60AnGGM1"
+      ssl_enabled = System.get_env("SSL_ENABLED") || false
       keywords
       |> Keyword.delete(:dynamic_config)
       |> Keyword.merge([
-        secret_key_base: secret_key_base
+        secret_key_base: secret_key_base,
+        ssl_enabled: ssl_enabled
       ])
     end
   end
