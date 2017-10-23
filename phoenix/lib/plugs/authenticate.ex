@@ -27,7 +27,7 @@ defmodule LoginProxy.Authenticate do
 
   def save_current_url(conn) do
     port = if conn.port == 80, do: "", else: ":" <> to_string(conn.port)
-    scheme = if Application.get_env(:login_proxy, LoginProxy.Endpoint)[:ssl_enabled], do: "https", else: "http"
+    scheme = if Application.get_env(:login_proxy, LoginProxy.Endpoint)[:ssl_scheme_enabled], do: "https", else: "http"
     url = scheme <> "://" <> conn.host <> port <> conn.request_path
     Logger.info "Saving RelayState with url: " <> url
     relay_state = :uuid.uuid4() |> :uuid.to_string() |> to_string
