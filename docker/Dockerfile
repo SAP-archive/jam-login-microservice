@@ -33,7 +33,12 @@ USER root
 RUN chown -R elixir:elixir /app/current 
 USER elixir
 RUN mix compile
-  
+
+ARG PROMPT
+RUN [ -n "$PROMPT" ] && echo "PS1=\"[$PROMPT] \$PS1\"" >> ~/.bashrc || true
+ARG INFO
+RUN [ -n "$INFO" ] && echo "$INFO" > /app/current/build.txt || true
+
 EXPOSE 4000
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 CMD ["mix", "phoenix.server"]
