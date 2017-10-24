@@ -47,18 +47,17 @@ defmodule LoginProxy.SamlController do
         lastname = Keyword.get(attrs, :last_name) |> to_string
         username = assertion |> Records.esaml_assertion(:subject) |> Records.esaml_subject(:name) |> to_string
         Logger.debug "username, email, first, last: \n" <> "#{username}, #{email}, #{firstname}, #{lastname}"
-        # Save session
+        # Save session and set session cookie
         session_uuid = :uuid.uuid4() |> :uuid.to_string() |> to_string
         :ok = LoginProxy.SessionStore.save(session_uuid,
           %{"username" => username, "email" => email, "firstname" => firstname, "lastname" => lastname})
+        conn = put_session(conn, :session_id, session_uuid)
         # Get saved request path
         relay_state = params["RelayState"]
         Logger.debug "Getting original url from RelayState: " <> inspect(relay_state)
         redirect_path =
         with {:ok, url} <- LoginProxy.RelayState.load(relay_state) do
-          # Save session uuid instead in relay_state for deferred cookie setting
-          LoginProxy.RelayState.save(relay_state, session_uuid)
-          url <> "?RelayState=#{relay_state}"
+          url
         else
           _ ->
             Logger.error("Relay state load failed for key: #{relay_state}")
