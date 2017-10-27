@@ -73,6 +73,12 @@ config :login_proxy, tenants: [
     uuid: "c75ebed8-b329-4584-afc9-fbc9549e9646",
     service_provider_issuer: "issuer1"
   },
+  %{
+    server: "localhost",
+    name: "Tenant1",
+    uuid: "dddddddd-1ab1-1bc1-1de1-ffffffffffff",
+    service_provider_issuer: "issuer1"
+  }
 ]
 
 # Finally import the config/prod.secret.exs

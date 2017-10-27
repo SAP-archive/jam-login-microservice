@@ -66,6 +66,12 @@ config :login_proxy, idps: [
     idp_metadata_url: "https://accounts400.sap.com/saml2/metadata/accounts.sap.com",
     issuer: "jamclm.sap.com"
   },
+  %{
+    server: "localhost",
+    base: "https://localhost:443",
+    idp_metadata_url: "https://dev-jamclm.accounts400.ondemand.com/saml2/metadata/dev-jamclm.accounts400.ondemand.com",
+    issuer: "kora-prod-local.sap.com"
+  }
 ]
 # tenant info could be provided by a service later on.
 # Until then:
