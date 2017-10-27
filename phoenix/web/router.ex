@@ -11,7 +11,6 @@ defmodule LoginProxy.Router do
   end
 
   pipeline :auth do
-    plug :accepts, ["html"]
     plug :fetch_session
     plug :put_secure_browser_headers
     plug Plug.Parsers,
