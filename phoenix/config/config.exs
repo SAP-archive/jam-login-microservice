@@ -48,6 +48,7 @@ config :login_proxy, idps: [
     idp_metadata_url: "https://dev-jamclm.accounts400.ondemand.com/saml2/metadata/dev-jamclm.accounts400.ondemand.com",
     issuer: "kora-dev.sap.com"
   },
+  # test2: us-west-1 AWS env
   %{
     server: "jam.test2.sapkora.ca",
     base: "https://jam.test2.sapkora.ca",
@@ -57,6 +58,19 @@ config :login_proxy, idps: [
   %{
     server: "qa.test2.sapkora.ca",
     base: "https://qa.test2.sapkora.ca",
+    idp_metadata_url: "https://dev-jamclm.accounts400.ondemand.com/saml2/metadata/dev-jamclm.accounts400.ondemand.com",
+    issuer: "kora-test-qa.sap.com"
+  },
+  # test3: eu-central-1 AWS env
+  %{
+    server: "jam.test3.sapkora.ca",
+    base: "https://jam.test3.sapkora.ca",
+    idp_metadata_url: "https://dev-jamclm.accounts400.ondemand.com/saml2/metadata/dev-jamclm.accounts400.ondemand.com",
+    issuer: "kora-test-jam.sap.com"
+  },
+  %{
+    server: "qa.test3.sapkora.ca",
+    base: "https://qa.test3.sapkora.ca",
     idp_metadata_url: "https://dev-jamclm.accounts400.ondemand.com/saml2/metadata/dev-jamclm.accounts400.ondemand.com",
     issuer: "kora-test-qa.sap.com"
   },
