@@ -3,7 +3,16 @@ def git_url = 'git@github.wdf.sap.corp:/Jam-clm/login_proxy.git'
 
 def git_spec = [branch: BRANCH_NAME, credentialsId: 'github-clm', url: git_url]
 
-def aws_base() { return '371089343861.dkr.ecr.us-west-1.amazonaws.com' }
+def aws_bases() { return [
+  'us-west-1': '371089343861.dkr.ecr.us-west-1.amazonaws.com',
+  'eu-central-1': '371089343861.dkr.ecr.eu-central-1.amazonaws.com',
+]}
+
+def aws_k8s_namespaces() { return [
+  'us-west-1' : 'kora-test',
+  'eu-central-1' : 'eu-central-prod',
+]}
+
 def aws_repository() { return 'kora/login-proxy' }
 
 def local_registry() { return 'clm-registry.mo.sap.corp:5000' }
@@ -221,21 +230,27 @@ pipeline {
           //
           // finally, tag our images for pushing to aws (build-tagged & stable)
           // then login to aws & push the images up
+          //   ... for each aws region/container registry
           //
-          aws_image_tagged = aws_repo_image(currentBuild.description)
-          aws_image_stable = aws_repo_image(stable_tag())
+          aws_bases().each { region, repo_base ->
 
-          docker_tag( prod_image_tagged, aws_image_tagged )
-          docker_tag( prod_image_tagged, aws_image_stable )
+            aws_image_tagged = aws_repo_image(repo_base, currentBuild.description)
+            aws_image_stable = aws_repo_image(repo_base, stable_tag())
 
-          // login to aws
-          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-ec2-access',
-            usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-            sh('$( aws ecr get-login --no-include-email --region us-west-1 )')
-           }
+            docker_tag( prod_image_tagged, aws_image_tagged )
+            docker_tag( prod_image_tagged, aws_image_stable )
 
-          docker_push( aws_image_tagged )
-          docker_push( aws_image_stable )
+            // login to aws
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-ec2-access',
+              usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+
+              sh('$( aws ecr get-login --no-include-email --region ' + region + ' )')
+            }
+
+            docker_push( aws_image_tagged )
+            docker_push( aws_image_stable )
+
+          }
         }
       }
     }
@@ -250,10 +265,19 @@ pipeline {
           // Now we just use kubectl to update the yaml, specifying the new image should be used in the deployment
           //  it should automatically trigger a rolling update
           //
-          aws_image_tagged = aws_repo_image(currentBuild.description)
+          //   ... for each aws region/container registry
 
-          withCredentials([file(credentialsId: 'k8s-access', variable: 'KUBECONFIGFILE')]) {
-            sh('kubectl --kubeconfig=$KUBECONFIGFILE -n kora-test set image ' + kubernetes.deployment + ' ' + kubernetes.pod_image + '=' + aws_image_tagged)
+          aws_bases().each { region, repo_base ->
+            aws_image_tagged = aws_repo_image(repo_base, currentBuild.description)
+            aws_image_stable = aws_repo_image(repo_base, stable_tag())
+
+            credentials_id = 'k8s-access-' + region
+            namespace = aws_k8s_namespaces()[region]
+
+            withCredentials([file(credentialsId: credentials_id, variable: 'KUBECONFIGFILE')]) {
+              sh('kubectl --kubeconfig=$KUBECONFIGFILE -n ' + namespace + ' set image ' + kubernetes.deployment + ' ' + kubernetes.pod_image + '=' + aws_image_tagged)
+            }
+
           }
         }
       }
@@ -329,8 +353,8 @@ def local_repo_image(image_mode, tag) {
     }
 }
 
-def aws_repo_image(tag) {
-    return aws_base() + '/' + aws_repository() + ':' + tag
+def aws_repo_image(base, tag) {
+    return base + '/' + aws_repository() + ':' + tag;
 }
 
 // docker pull
