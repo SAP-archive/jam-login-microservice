@@ -7,21 +7,32 @@ defmodule LoginProxy.Authenticate do
 
   def call(conn, opts) do
     {authenticated, conn} = get_authenticated_user(conn)
-    if authenticated || no_auth_path?(conn, opts) do
-      # Generate auth header with JWT containing logged in user
-      conn = if Map.get(conn.assigns, :user) do
+    cond do
+      authenticated -> # Generate auth header with JWT containing logged in user
         auth_header = "Bearer " <> KorAuth.Jwt.create_token(conn.assigns.user, Application.get_env(:korauth, :jwt_hs256_secret))
         conn |> put_req_header("authentication", auth_header)
-      else
+
+      no_auth_path?(conn, opts) -> conn # continue
+
+      true -> maybe_redirect_for_sso(conn)
+    end
+  end
+
+  defp maybe_redirect_for_sso(conn) do
+    case xhr?(conn) do
+      true -> # do no redirect ajax; return unauthorized status and a header
         conn
-      end
-    else
-      # Save current url in Redis
-      relay_state = save_current_url(conn)
-      # Redirect
-      Logger.debug "Redirecting to: " <> "/auth/saml?RelayState=#{relay_state}"
-      Phoenix.Controller.redirect(conn, external: "/auth/saml?RelayState=#{relay_state}")
-      |> halt
+        |> put_resp_header("authentication-failure", "true")
+        |> put_resp_header("content-type", "application/json")
+        |> send_resp(:unauthorized, ~s/{"error": {"message": "Unauthorized", "code": 401}}/)
+        |> halt
+      _ -> # redirect otherwise
+        # Save current url in Redis
+        relay_state = save_current_url(conn)
+        # Redirect
+        Logger.debug "Redirecting to: " <> "/auth/saml?RelayState=#{relay_state}"
+        Phoenix.Controller.redirect(conn, external: "/auth/saml?RelayState=#{relay_state}")
+        |> halt
     end
   end
 
@@ -52,4 +63,7 @@ defmodule LoginProxy.Authenticate do
   defp no_auth_path?(conn, opts) do
     conn.request_path in (opts[:no_auth_paths] || [])
   end
+
+  defp xhr?(conn), do: "XMLHttpRequest" in get_req_header(conn, "x-requested-with")
+
 end

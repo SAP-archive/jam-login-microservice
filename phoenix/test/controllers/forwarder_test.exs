@@ -36,11 +36,19 @@ defmodule LoginProxy.ForwarderTest do
     assert html_response(conn, 302) =~ ~r/You are being.*redirected/
   end
 
+  test "AJAX GET /ui/job/ConversationServiceBuild/ (auth failure)", %{conn: conn} do
+    get conn, "/auth/logout"
+    conn = Plug.Conn.put_req_header(conn, "x-requested-with", "XMLHttpRequest")
+    conn = get conn, "/ui/job/ConversationServiceBuild/"
+    assert json_response(conn, 401) ==  %{"error" => %{"message" => "Unauthorized", "code" => 401}}
+    assert Plug.Conn.get_req_header(conn, "authentication-failure")
+  end
+
   test "GET api /testing/api", %{conn: conn} do
     HttpMock.set_response(%{
       status_code: 200,
       body: ~s({"results": [1,2,3]}),
-      headers: %{hdrs: [{"content-type", "application/json"}]}
+      headers: %{hdrs: [{"content-type", "application/json"}, {"x-requested-with", "XMLHttpRequest"}]}
     })
 
     conn = LoginProxy.LoginMock.login(conn)
