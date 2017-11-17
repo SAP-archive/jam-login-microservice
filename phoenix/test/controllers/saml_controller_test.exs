@@ -8,7 +8,9 @@ defmodule LoginProxy.SamlControllerTest do
                      idp_metadata_url: "https://accounts400.sap.com/saml2/metadata/accounts.sap.com", 
                      issuer: "jamclm.sap.com"})
     conn = Plug.Conn.assign(conn, :sp, sp)
-    {:ok, conn: conn}
+    {:ok, conn:
+      conn |> Plug.Conn.put_req_header("accept", "text/html")
+    }
   end
 
   test "Redirect for root", %{conn: conn} do

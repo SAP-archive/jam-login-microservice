@@ -26,6 +26,8 @@ config :login_proxy, LoginProxy.Endpoint,
     ]
   ]
 
+config :login_proxy, :session_timeout, 30 * 60 # 30 minutes
+
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 

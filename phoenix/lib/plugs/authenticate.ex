@@ -19,20 +19,21 @@ defmodule LoginProxy.Authenticate do
   end
 
   defp maybe_redirect_for_sso(conn) do
-    case xhr?(conn) do
-      true -> # do no redirect ajax; return unauthorized status and a header
-        conn
-        |> put_resp_header("authentication-failure", "true")
-        |> put_resp_header("content-type", "application/json")
-        |> send_resp(:unauthorized, ~s/{"error": {"message": "Unauthorized", "code": 401}}/)
-        |> halt
-      _ -> # redirect otherwise
-        # Save current url in Redis
-        relay_state = save_current_url(conn)
-        # Redirect
-        Logger.debug "Redirecting to: " <> "/auth/saml?RelayState=#{relay_state}"
-        Phoenix.Controller.redirect(conn, external: "/auth/saml?RelayState=#{relay_state}")
-        |> halt
+    if xhr?(conn) || !accept_html?(conn) do
+      # do not redirect ajax and asset requests; return unauthorized status and a header
+      conn
+      |> put_resp_header("not-authenticated", "true")
+      |> put_resp_header("content-type", "application/json")
+      |> send_resp(:unauthorized, ~s/{"error": {"message": "Unauthorized", "code": 401}}/)
+      |> halt
+    else
+      # redirect otherwise
+      # Save current url in Redis
+      relay_state = save_current_url(conn)
+      # Redirect
+      Logger.debug "Redirecting to: " <> "/auth/saml?RelayState=#{relay_state}"
+      Phoenix.Controller.redirect(conn, external: "/auth/saml?RelayState=#{relay_state}")
+      |> halt
     end
   end
 
@@ -66,4 +67,7 @@ defmodule LoginProxy.Authenticate do
 
   defp xhr?(conn), do: "XMLHttpRequest" in get_req_header(conn, "x-requested-with")
 
+  defp accept_html?(conn) do
+    get_req_header(conn, "accept") |> Enum.any?(fn h -> h =~ ~r{text/html} end)
+  end
 end

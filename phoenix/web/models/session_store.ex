@@ -5,7 +5,6 @@ defmodule LoginProxy.SessionStore do
 
   require Logger
   alias LoginProxy.Redis
-  @redis_timeout "1800" # 30 minutes
 
   def save(bare_key, params) do
     key = prefix() <> bare_key
@@ -39,7 +38,8 @@ defmodule LoginProxy.SessionStore do
   end
 
   def refresh(key) do
-    {result, _} = Redis.command(["EXPIRE", key, @redis_timeout])
+    timeout = Application.get_env(:login_proxy, :session_timeout) |> to_string
+    {result, _} = Redis.command(["EXPIRE", key, timeout])
     result
   end
 

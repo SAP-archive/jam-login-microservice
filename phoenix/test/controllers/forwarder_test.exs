@@ -18,6 +18,7 @@ defmodule LoginProxy.ForwarderTest do
     conn = LoginProxy.LoginMock.login(conn)
     conn = get conn, "/ui/job/ConversationServiceBuild/"
     assert html_response(conn, 200) =~ "ConversationServiceBuild"
+    refute Plug.Conn.get_resp_header(conn, "not-authenticated") |> Enum.at(0)
     # Validate that a GET request to the url was made internally
     request = HttpMock.get_request()
     #assert %{method: :get, url: "#{url}/ui/job/ConversationServiceBuild/"} = request     # elixir can't handle this
@@ -31,17 +32,28 @@ defmodule LoginProxy.ForwarderTest do
   end
 
   test "GET /ui/job/ConversationServiceBuild/ (auth failure)", %{conn: conn} do
-    conn = get conn, "/auth/logout"
+    get conn, "/auth/logout"
+    conn = Plug.Conn.put_req_header(conn, "accept", "text/html")
     conn = get conn, "/ui/job/ConversationServiceBuild/"
     assert html_response(conn, 302) =~ ~r/You are being.*redirected/
+    refute Plug.Conn.get_resp_header(conn, "not-authenticated") |> Enum.at(0)
   end
 
-  test "AJAX GET /ui/job/ConversationServiceBuild/ (auth failure)", %{conn: conn} do
+  test "AJAX GET /testing/api (auth failure)", %{conn: conn} do
     get conn, "/auth/logout"
     conn = Plug.Conn.put_req_header(conn, "x-requested-with", "XMLHttpRequest")
-    conn = get conn, "/ui/job/ConversationServiceBuild/"
+    |> Plug.Conn.put_req_header("accept", "application/json")
+    conn = get conn, "/testing/api"
     assert json_response(conn, 401) ==  %{"error" => %{"message" => "Unauthorized", "code" => 401}}
-    assert Plug.Conn.get_req_header(conn, "authentication-failure")
+    assert Plug.Conn.get_resp_header(conn, "not-authenticated") |> Enum.at(0)
+  end
+
+  test "Asset GET /ui/image.png (auth failure)", %{conn: conn} do
+    get conn, "/auth/logout"
+    conn = Plug.Conn.put_req_header(conn, "accept", "*/*")
+    conn = get conn, "/ui/image.png"
+    assert json_response(conn, 401) ==  %{"error" => %{"message" => "Unauthorized", "code" => 401}}
+    assert Plug.Conn.get_resp_header(conn, "not-authenticated") |> Enum.at(0)
   end
 
   test "GET api /testing/api", %{conn: conn} do
