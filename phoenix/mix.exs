@@ -19,7 +19,9 @@ defmodule LoginProxy.Mixfile do
   def application do
     [mod: {LoginProxy, []},
      applications: [:dynamic_config, :phoenix, :phoenix_pubsub, :phoenix_html, :cowboy,
-      :logger, :gettext, :esaml, :redix, :httpotion]]
+      :logger, :gettext, :esaml, :redix, :httpotion, :uuid, :xml_builder,
+      :korauth,
+      ]]
   end
 
   # Specifies which paths to compile per environment.
