@@ -44,6 +44,8 @@ defmodule LoginProxy.Mixfile do
      {:excoveralls, "~> 0.6", only: :test},
      {:dynamic_config, github: "rhetzler/dynamic_config", ref: '51939f9f1c374af7bcf83e005044dfc06de2ac0f' },
      {:korauth, git: "https://github.wdf.sap.corp/Jam-clm/korauth", tag: "0.3.1"},
-     {:cowboy, "~> 1.0", override: true}] # esaml dependency. version mismatch.
+     {:cowboy, "~> 1.0", override: true},
+     {:distillery, "~> 1.5.2"},
+     ]
   end
 end
