@@ -19,6 +19,10 @@ COPY --from=0 /opt/app/_build/prod/rel/login_proxy/releases/0.0.1/login_proxy.ta
 
 RUN tar xzf login_proxy.tar.gz
 
+# JAMCLM-378 -- @TODO remove this during task #2-3
+COPY --from=0 /opt/app/JAM_CLM_KEY.pem /opt/app/JAM_CLM_KEY.pem
+COPY --from=0 /opt/app/JAM_CLM.pem /opt/app/JAM_CLM.pem
+
 ARG PROMPT
 RUN [ -n "$PROMPT" ] && echo "PS1=\"[$PROMPT] \$PS1\"" >> ~/.bashrc || true
 ARG INFO

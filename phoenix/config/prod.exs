@@ -24,6 +24,13 @@ config :dynamic_config, :boot_modules, DynamicConfig.Service.implicit_modules([:
 # Do not print debug messages in production
 config :logger, level: :debug
 
+# JAMCLM-378  -- @TODO ensure key_file/cert_file are forced to be overridden. Intuitive boot failure if not present
+config :login_proxy, :esaml,
+  key_file: "JAM_CLM_KEY.pem",
+  cert_file: "JAM_CLM.pem",
+  allow_stale: false,
+  esaml_util: :esaml_util
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
