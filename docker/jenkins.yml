@@ -1,5 +1,5 @@
 service_prod:
-  image: clm-registry.mo.sap.corp:5000/clm-loginproxy-prod:$TAG
+  image: clm-registry.mo.sap.corp:5000/kora/login-proxy:$TAG
   links:
    - redis
   environment:
@@ -7,18 +7,18 @@ service_prod:
    - PORT=4000
    - JWT_SECRET=g4AhQAENOGwB3zcAvg-nFDUhuPivAggFEMRcYLo8V5rrClX7UFJ5iX2yU1GEJI202HTS7_TBRTwWhgOTHnvwFA
    - SUB_DOMAIN=""
-  volumes:
-   - ../testcases:/app/current/test/testcases
 service_test:
- image: clm-registry.mo.sap.corp:5000/clm-loginproxy-test:$TAG
+ image: clm-registry.mo.sap.corp:5000/kora/login-proxy-dev:$TAG
  links:
   - redis
+  - service_prod
  environment:
    - MIX_ENV=test
    - TEST_REPORT=true
    - JWT_SECRET=g4AhQAENOGwB3zcAvg-nFDUhuPivAggFEMRcYLo8V5rrClX7UFJ5iX2yU1GEJI202HTS7_TBRTwWhgOTHnvwFA
  command: mix test
  volumes:
+   - ../testcases:/app/current/test/testcases
    - ../reports:/app/current/test/reports
    - ../cover:/app/current/cover
 redis:
