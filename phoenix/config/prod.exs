@@ -18,6 +18,9 @@ config :login_proxy, LoginProxy.Endpoint,
   secure_session: true
   # cache_static_manifest: "priv/static/manifest.json"
 
+Code.append_path("./_build/prod/lib/dynamic_config/ebin")
+config :dynamic_config, :boot_modules, DynamicConfig.Service.implicit_modules([:loaded_applications, :project_dependencies, :project_app])
+
 # Do not print debug messages in production
 config :logger, level: :debug
 

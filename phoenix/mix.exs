@@ -42,7 +42,7 @@ defmodule LoginProxy.Mixfile do
      {:xml_builder, "~> 0.0.6"},
      {:junit_formatter, "~> 1.3", only: [:test]},
      {:excoveralls, "~> 0.6", only: :test},
-     {:dynamic_config, github: "rhetzler/dynamic_config", ref: '51939f9f1c374af7bcf83e005044dfc06de2ac0f' },
+     {:dynamic_config, github: "rhetzler/dynamic_config", ref: '9a05a99ced627c764b54aa5241af2d92f1ddcaba' },
      {:korauth, git: "https://github.wdf.sap.corp/Jam-clm/korauth", tag: "0.3.1"},
      {:cowboy, "~> 1.0", override: true},
      {:distillery, "~> 1.5.2"},
