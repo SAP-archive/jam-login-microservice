@@ -1,0 +1,32 @@
+FROM bitwalker/alpine-elixir:latest
+
+COPY docker/sap_global_root_ca.crt docker/SAPNetCA_G2.crt /usr/share/ca-certificates/SAP/
+RUN apk add --no-cache --update ca-certificates git make g++ wget curl && \
+    echo "SAP/sap_global_root_ca.crt" >> /etc/ca-certificates.conf && \
+    echo "SAP/SAPNetCA_G2.crt" >> /etc/ca-certificates.conf && \
+    update-ca-certificates
+
+# pull down dumb-init (tiny atomic layer)
+RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 && \
+    chmod +x /usr/local/bin/dumb-init
+
+RUN mkdir -p /opt/app && chmod -R 777 /opt/app
+ENV HOME=/opt/app PORT=4000 MIX_ENV=prod
+
+RUN mix local.hex --force && mix local.rebar --force
+
+WORKDIR /opt/app
+
+ADD phoenix/mix.exs phoenix/mix.lock ./
+RUN mix do deps.get, deps.compile
+
+ADD phoenix .
+RUN mix do compile, release
+
+ARG PROMPT
+RUN [ -n "$PROMPT" ] && echo "PS1=\"[$PROMPT] \$PS1\"" >> ~/.bashrc || true
+ARG INFO
+RUN [ -n "$INFO" ] && echo "$INFO" > /build.txt || true
+
+ENTRYPOINT ["/usr/local/bin/dumb-init"]
+CMD ["/bin/bash"]
