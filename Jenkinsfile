@@ -7,10 +7,13 @@ def aws_base() { return '371089343861.dkr.ecr.us-west-1.amazonaws.com' }
 def aws_repository() { return 'kora/login_proxy' }
 
 def local_registry() { return 'clm-registry.mo.sap.corp:5000' }
+
+def image_base() { return 'kora/login-proxy' }
+
 def local_images = [
-  prod: 'clm-loginproxy-prod',
-  test: 'clm-loginproxy-test',
-  dev: 'clm-loginproxy-dev',
+  prod: image_base(),
+  dev: image_base() + '-dev',
+  build: image_base() + '-build',
 ]
 
 def container_prompts = [
@@ -29,10 +32,13 @@ def mail_recipients = 'DL SAP Jam CLM <DL_58AF12A15F99B7D3BC000054@exchange.sap.
 
 pipeline {
   agent {
-      label "docker"
+    label "meta-only"
   }
   stages{
     stage("Checkout & build") {
+      agent {
+          label "docker"
+      }
       steps {
         step([$class:'WsCleanup'])
         git git_spec
@@ -40,35 +46,33 @@ pipeline {
           currentBuild.description = generate_tag()
           docker_image_cleanup()
 
-          dev_image_stable = local_repo_image(local_images.dev, stable_tag())
-          test_image_stable = local_repo_image(local_images.test, stable_tag())
-          prod_image_stable = local_repo_image(local_images.prod, stable_tag())
+          dev_image_stable   = local_repo_image(local_images.dev, stable_tag())
+          prod_image_stable  = local_repo_image(local_images.prod, stable_tag())
+          build_image_stable = local_repo_image(local_images.build, stable_tag())
 
-          dev_image_tagged  = local_repo_image(local_images.dev, currentBuild.description)
-          test_image_tagged = local_repo_image(local_images.test, currentBuild.description)
-          prod_image_tagged = local_repo_image(local_images.prod, currentBuild.description)
+          dev_image_tagged   = local_repo_image(local_images.dev, currentBuild.description)
+          prod_image_tagged  = local_repo_image(local_images.prod, currentBuild.description)
+          build_image_tagged = local_repo_image(local_images.build, currentBuild.description)
 
-          docker_pull(  dev_image_stable, true )
-          docker_pull( test_image_stable, true )
-          docker_pull( prod_image_stable, true )
+          docker_pull(   dev_image_stable, true )
+          docker_pull(  prod_image_stable, true )
+          docker_pull( build_image_stable, true )
 
-          // having primed docker cache with our stable builds (theoretically) we proceed to generate our new builds
-          sh 'docker/jenkins-build.sh dev ' + dev_image_tagged + \
-                                    ' --prompt ' + container_prompts.dev + \
-                                    ' --build-info build=' + currentBuild.description
-          sh 'docker/jenkins-build.sh test ' + test_image_tagged + \
-                                    ' --prompt ' + container_prompts.test + \
-                                    ' --build-info build=' + currentBuild.description
-          sh 'docker/jenkins-build.sh prod ' + prod_image_tagged + \
-                                    ' --prompt ' + container_prompts.prod_prefix + currentBuild.description + \
-                                    ' --build-info build=' + currentBuild.description
+          sh "docker/jenkins-build.sh dev ${dev_image_tagged}" + \
+                                    " --prompt ${container_prompts.dev}" + \
+                                    " --build-info build=${currentBuild.description}"
+
+          sh "docker/jenkins-build.sh prod ${prod_image_tagged}" + \
+                                    " --build ${build_image_tagged}" + \
+                                    " --prompt ${container_prompts.prod_prefix}${currentBuild.description}" + \
+                                    " --build-info build=${currentBuild.description}"
 
           // never push latest, since this build hasn't been validated
 
           // these image names contain the build/git-sha qualified tags (ie, we're not pushing anything as stable)
-          docker_push(  dev_image_tagged )
-          docker_push( test_image_tagged )
-          docker_push( prod_image_tagged )
+          docker_push(   dev_image_tagged )
+          docker_push(  prod_image_tagged )
+          docker_push( build_image_tagged )
 
           stash name: "docker_config", includes: "docker/*"
         }
@@ -86,10 +90,10 @@ pipeline {
               unstash "docker_config"
               docker_image_cleanup()
 
-              test_image_tagged = local_repo_image(local_images.test, currentBuild.description)
+              dev_image_tagged = local_repo_image(local_images.dev, currentBuild.description)
               tag_spec = 'TAG=' + currentBuild.description + ' '
 
-              docker_pull( test_image_tagged )
+              docker_pull( dev_image_tagged )
               docker_pull( 'redis:3.0' )
 
               // get these set up before docker manually constructs them as root owned
@@ -131,9 +135,11 @@ pipeline {
 
               api_test_image = local_repo_image('clm-api-testing', '')
               prod_image_tagged = local_repo_image(local_images.prod, currentBuild.description)
+              dev_image_tagged = local_repo_image(local_images.dev, currentBuild.description)
               tag_spec = 'TAG=' + currentBuild.description + ' '
 
               docker_pull( prod_image_tagged )
+              docker_pull( dev_image_tagged )
               docker_pull( 'redis:3.0' )
               docker_pull( api_test_image )
 
@@ -151,12 +157,18 @@ pipeline {
               sh(tag_spec + 'docker-compose -f docker/jenkins.yml up -d service_prod')
               sleep(10) // 10s
 
+                // from the container, figure out the ip/port of the service_prod
+              service_domain = sh(returnStdout: true, script: tag_spec + 'docker-compose -f docker/jenkins.yml run --rm ' + \
+                'service_test env | grep -i service_prod_port= | cut -d = -f 2'
+              ).trim().replace( "tcp://", "http://" )
               //
               // Run the actual tests: populate the db via api and then run the test runner
               //
               try {
 
-                sh(tag_spec + 'docker-compose -f docker/jenkins.yml exec -T service_prod mix data.populate --api')
+                // service_test implicitly knows location of service_prod via env variable
+                // this should be updated to be declarative
+                sh(tag_spec + "docker-compose -f docker/jenkins.yml run --rm -e MIX_ENV=dev service_test mix data.populate --api --service ${service_domain}")
 
                 sh(tag_spec + 'docker-compose -f docker/jenkins.yml run --rm api_test_runner')
 
@@ -172,6 +184,9 @@ pipeline {
       }
     }
     stage("Publish") {
+      agent {
+          label "docker"
+      }
       steps {
         script {
           docker_image_cleanup()
@@ -179,29 +194,29 @@ pipeline {
           //
           // pull our build-specific images to the local machine
           //
-          dev_image_tagged = local_repo_image(local_images.dev, currentBuild.description)
-          test_image_tagged = local_repo_image(local_images.test, currentBuild.description)
-          prod_image_tagged = local_repo_image(local_images.prod, currentBuild.description)
+          dev_image_tagged   = local_repo_image(local_images.dev,   currentBuild.description)
+          prod_image_tagged  = local_repo_image(local_images.prod,   currentBuild.description)
+          build_image_tagged = local_repo_image(local_images.build, currentBuild.description)
 
           docker_pull( dev_image_tagged )
-          docker_pull( test_image_tagged )
           docker_pull( prod_image_tagged )
+          docker_pull( build_image_tagged )
 
           //
           // since this particular build is a success, tag it as stable
           // then push to our local dev registry
           //
           dev_image_stable = local_repo_image(local_images.dev, stable_tag())
-          test_image_stable = local_repo_image(local_images.test, stable_tag())
           prod_image_stable = local_repo_image(local_images.prod, stable_tag())
+          build_image_stable = local_repo_image(local_images.build, stable_tag())
 
-          docker_tag(  dev_image_tagged,  dev_image_stable )
-          docker_tag( test_image_tagged, test_image_stable )
-          docker_tag( prod_image_tagged, prod_image_stable )
+          docker_tag(   dev_image_tagged, dev_image_stable )
+          docker_tag(  prod_image_tagged, prod_image_stable )
+          docker_tag( build_image_tagged, build_image_stable )
 
-          docker_push(  dev_image_stable )
-          docker_push( test_image_stable )
-          docker_push( prod_image_stable )
+          docker_push(   dev_image_stable )
+          docker_push(  prod_image_stable )
+          docker_push( build_image_stable )
 
           //
           // finally, tag our images for pushing to aws (build-tagged & stable)
@@ -225,6 +240,9 @@ pipeline {
       }
     }
     stage("Deploy") {
+      agent {
+          label "docker"
+      }
       steps {
         script {
           //

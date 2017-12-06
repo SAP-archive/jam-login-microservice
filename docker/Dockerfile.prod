@@ -1,0 +1,35 @@
+ARG BUILD_IMAGE
+FROM $BUILD_IMAGE
+
+FROM bitwalker/alpine-elixir:latest
+
+RUN apk add --no-cache --update ca-certificates wget && \
+    update-ca-certificates
+
+# pull down dumb-init (pid1)
+RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 && \
+    chmod +x /usr/local/bin/dumb-init
+
+RUN mkdir -p /opt/app && chmod -R 777 /opt/app
+
+ENV HOME=/opt/app PORT=4000
+WORKDIR /opt/app
+
+COPY --from=0 /opt/app/_build/prod/rel/login_proxy/releases/0.0.1/login_proxy.tar.gz login_proxy.tar.gz
+
+RUN tar xzf login_proxy.tar.gz
+
+# JAMCLM-378 -- @TODO remove this during task #2-3
+COPY --from=0 /opt/app/JAM_CLM_KEY.pem /opt/app/JAM_CLM_KEY.pem
+COPY --from=0 /opt/app/JAM_CLM.pem /opt/app/JAM_CLM.pem
+
+ARG PROMPT
+RUN [ -n "$PROMPT" ] && echo "PS1=\"[$PROMPT] \$PS1\"" >> ~/.bashrc || true
+ARG INFO
+RUN [ -n "$INFO" ] && echo "$INFO" > /build.txt || true
+
+ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
+CMD ["/opt/app/bin/login_proxy", "foreground"]
+#CMD ["/opt/app/bin/login_proxy", "console"]
+EXPOSE 4000
+

@@ -19,7 +19,9 @@ defmodule LoginProxy.Mixfile do
   def application do
     [mod: {LoginProxy, []},
      applications: [:dynamic_config, :phoenix, :phoenix_pubsub, :phoenix_html, :cowboy,
-      :logger, :gettext, :esaml, :redix, :httpotion]]
+      :logger, :gettext, :esaml, :redix, :httpotion, :uuid, :xml_builder,
+      :korauth,
+      ]]
   end
 
   # Specifies which paths to compile per environment.
@@ -35,15 +37,17 @@ defmodule LoginProxy.Mixfile do
      {:phoenix_html, "~> 2.6"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.11"},
-     {:uuid, github: "avtobiff/erlang-uuid", override: true}, # esaml dependency. version mismatch.
-     {:esaml, github: "arekinath/esaml"},
+     {:uuid, github: "avtobiff/erlang-uuid", tag: "v0.5.1", override: true}, # esaml dependency. version mismatch.
+     {:esaml, github: "arekinath/esaml", ref: 'bf52dcb449184dc94e4fb1ff8820b08cc1ceab09'},
      {:redix, ">= 0.0.0"},
      {:httpotion, "~> 3.0.2"},
      {:xml_builder, "~> 0.0.6"},
      {:junit_formatter, "~> 1.3", only: [:test]},
      {:excoveralls, "~> 0.6", only: :test},
-     {:dynamic_config, github: "rhetzler/dynamic_config", ref: '51939f9f1c374af7bcf83e005044dfc06de2ac0f' },
+     {:dynamic_config, github: "rhetzler/dynamic_config", ref: '9a05a99ced627c764b54aa5241af2d92f1ddcaba' },
      {:korauth, git: "https://github.wdf.sap.corp/Jam-clm/korauth", tag: "0.3.1"},
-     {:cowboy, "~> 1.0", override: true}] # esaml dependency. version mismatch.
+     {:cowboy, "~> 1.0", override: true},
+     {:distillery, "~> 1.5.2"},
+     ]
   end
 end
