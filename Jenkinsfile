@@ -32,10 +32,13 @@ def mail_recipients = 'DL SAP Jam CLM <DL_58AF12A15F99B7D3BC000054@exchange.sap.
 
 pipeline {
   agent {
-      label "docker"
+    label "meta-only"
   }
   stages{
     stage("Checkout & build") {
+      agent {
+          label "docker"
+      }
       steps {
         step([$class:'WsCleanup'])
         git git_spec
@@ -181,6 +184,9 @@ pipeline {
       }
     }
     stage("Publish") {
+      agent {
+          label "docker"
+      }
       steps {
         script {
           docker_image_cleanup()
@@ -234,6 +240,9 @@ pipeline {
       }
     }
     stage("Deploy") {
+      agent {
+          label "docker"
+      }
       steps {
         script {
           //
