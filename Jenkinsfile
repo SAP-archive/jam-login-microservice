@@ -4,7 +4,7 @@ def git_url = 'git@github.wdf.sap.corp:/Jam-clm/login_proxy.git'
 def git_spec = [branch: BRANCH_NAME, credentialsId: 'github-clm', url: git_url]
 
 def aws_base() { return '371089343861.dkr.ecr.us-west-1.amazonaws.com' }
-def aws_repository() { return 'kora/login_proxy' }
+def aws_repository() { return 'kora/login-proxy' }
 
 def local_registry() { return 'clm-registry.mo.sap.corp:5000' }
 
