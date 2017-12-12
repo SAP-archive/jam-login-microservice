@@ -1,4 +1,4 @@
-FROM elixir:1.4.2
+FROM elixir:1.5.2
 
 COPY docker/sap_global_root_ca.crt docker/SAPNetCA_G2.crt /usr/share/ca-certificates/SAP/
 RUN echo "SAP/sap_global_root_ca.crt" >> /etc/ca-certificates.conf && \

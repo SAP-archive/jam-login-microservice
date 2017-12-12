@@ -1,7 +1,7 @@
 ARG BUILD_IMAGE
 FROM $BUILD_IMAGE
 
-FROM bitwalker/alpine-elixir:latest
+FROM bitwalker/alpine-elixir:1.5.2
 
 RUN apk add --no-cache --update ca-certificates wget && \
     update-ca-certificates
