@@ -37,8 +37,8 @@ defmodule LoginProxy.Mixfile do
      {:phoenix_html, "~> 2.6"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.11"},
-     {:uuid, github: "avtobiff/erlang-uuid", tag: "v0.5.1", override: true}, # esaml dependency. version mismatch.
-     {:esaml, github: "arekinath/esaml", ref: 'bf52dcb449184dc94e4fb1ff8820b08cc1ceab09'},
+     {:elixir_uuid, "~> 1.2"},
+     {:esaml, github: "sudrao/esaml", tag: "v1.2"},
      {:redix, ">= 0.0.0"},
      {:httpotion, "~> 3.0.2"},
      {:xml_builder, "~> 0.0.6"},

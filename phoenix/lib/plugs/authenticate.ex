@@ -42,7 +42,7 @@ defmodule LoginProxy.Authenticate do
     scheme = if Application.get_env(:login_proxy, LoginProxy.Endpoint)[:ssl_scheme_enabled], do: "https", else: "http"
     url = scheme <> "://" <> conn.host <> port <> conn.request_path
     Logger.info "Saving RelayState with url: " <> url
-    relay_state = :uuid.uuid4() |> :uuid.to_string() |> to_string
+    relay_state = UUID.uuid4()
     LoginProxy.RelayState.save(relay_state, url)
     relay_state
   end

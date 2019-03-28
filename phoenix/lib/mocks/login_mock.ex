@@ -3,7 +3,7 @@ defmodule LoginProxy.LoginMock do
   import Plug.Test
 
   def login(conn) do
-    uuid = (:uuid.uuid4() |> :uuid.to_string() |> to_string) # erlang string to elixir string
+    uuid = UUID.uuid4()
     :ok = LoginProxy.SessionStore.save(uuid, 
       %{"username" => "I800000", "email" => "sam@sap.com", "firstname" => "Sam", "lastname" => "Doe"})
     conn
