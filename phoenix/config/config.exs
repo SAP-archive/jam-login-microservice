@@ -41,7 +41,7 @@ config :login_proxy, :http_request_module, HTTPotion
 
 config :login_proxy, :session_timeout, 2 * 60 * 60 # 2 hours
 
-config :korauth, :jwt_hs256_secret, {DynamicConfig.Env, "JWT_SECRET"}
+config :login_proxy, :jwt_hs256_secret, {DynamicConfig.Env, "JWT_SECRET"}
 
 config :login_proxy, idps: [
   %{

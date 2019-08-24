@@ -20,7 +20,6 @@ defmodule LoginProxy.Mixfile do
     [mod: {LoginProxy, []},
      applications: [:dynamic_config, :phoenix, :phoenix_pubsub, :phoenix_html, :cowboy,
       :logger, :gettext, :esaml, :redix, :httpotion, :uuid, :xml_builder,
-      :korauth,
       ]]
   end
 
@@ -42,10 +41,10 @@ defmodule LoginProxy.Mixfile do
      {:redix, ">= 0.0.0"},
      {:httpotion, "~> 3.0.2"},
      {:xml_builder, "~> 0.0.6"},
+     {:joken, "~> 2.0"},
      {:junit_formatter, "~> 1.3", only: [:test]},
      {:excoveralls, "~> 0.6", only: :test},
      {:dynamic_config, github: "rhetzler/dynamic_config", ref: '9a05a99ced627c764b54aa5241af2d92f1ddcaba' },
-     {:korauth, git: "https://github.wdf.sap.corp/Jam-clm/korauth", tag: "0.3.1"},
      {:cowboy, "~> 1.0", override: true},
      {:distillery, "~> 1.5.2"},
      ]

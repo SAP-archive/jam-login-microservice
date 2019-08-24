@@ -23,7 +23,7 @@ config :login_proxy, :esaml,
   esaml_util: LoginProxy.Test.EsamlUtil
 
 # Use a fixed secret
-config :korauth, :jwt_hs256_secret, "cef2699914a2a9ae5c8e2314faceb35ebe9f206eb352b1b13534e7bf2ac22d4f"
+config :login_proxy, :jwt_hs256_secret, "cef2699914a2a9ae5c8e2314faceb35ebe9f206eb352b1b13534e7bf2ac22d4f"
 
 config :junit_formatter,
   report_dir: Path.join([Mix.Project.build_path, "..", "..", "test", "reports"])

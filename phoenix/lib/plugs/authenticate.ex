@@ -9,7 +9,7 @@ defmodule LoginProxy.Authenticate do
     {authenticated, conn} = get_authenticated_user(conn)
     cond do
       authenticated -> # Generate auth header with JWT containing logged in user
-        auth_header = "Bearer " <> KorAuth.Jwt.create_token(conn.assigns.user, Application.get_env(:korauth, :jwt_hs256_secret))
+        auth_header = "Bearer " <> LoginProxy.Jwt.create_token(conn.assigns.user, Application.get_env(:login_proxy, :jwt_hs256_secret))
         conn |> put_req_header("authentication", auth_header)
 
       no_auth_path?(conn, opts) -> conn # continue
@@ -52,7 +52,7 @@ defmodule LoginProxy.Authenticate do
   defp get_authenticated_user(conn) do
     case get_session(conn, :session_id) do
       nil -> {false, conn}
-      uuid -> 
+      uuid ->
         with {:ok, user} <- LoginProxy.SessionStore.load(uuid) do
           {true, conn |> assign(:user, user)}
         else
