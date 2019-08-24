@@ -8,7 +8,7 @@ defmodule Mix.Tasks.Data.Discard do
   mix data.discard
   """
   @shortdoc "Withdraw test tuples from api test runner"
-  def run(args) do
+  def run(_args) do
     File.rm!("test/testcases/test_tuples.json")
   end
 

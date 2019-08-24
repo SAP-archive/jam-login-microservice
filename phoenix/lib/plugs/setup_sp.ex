@@ -5,7 +5,7 @@ defmodule LoginProxy.SetupSp do
   def init(opts), do: opts
 
 
-  def call(conn, opts) do
+  def call(conn, _opts) do
     idp_info = select_idp(conn)
     Logger.info "IDP metadata #{inspect idp_info}"
     {:ok, sp, idp} = LoginProxy.EsamlSetup.setup_esaml(idp_info)
@@ -21,10 +21,10 @@ defmodule LoginProxy.SetupSp do
     Logger.info "Host in request is: #{host} Port is: #{port}"
     domain =  if ( port in ["0", "80", "443"] ) do
                 host
-              else 
-                host <> ":" <> port 
+              else
+                host <> ":" <> port
               end
     Logger.info "Domain is: #{domain}"
     Enum.find(Application.get_env(:login_proxy, :idps), fn t -> t.server == domain end)
-  end  
+  end
 end

@@ -16,7 +16,7 @@ defmodule LoginProxy.Router do
     plug Plug.Parsers,
       parsers: [:urlencoded, :multipart, :json],
       pass: ["*/*"],
-      json_decoder: Poison
+      json_decoder: Jason
     plug LoginProxy.SetTenant
     plug LoginProxy.SetupSp
   end

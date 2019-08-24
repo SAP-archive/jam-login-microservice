@@ -1,7 +1,9 @@
 defmodule LoginProxy.Endpoint do
   use Phoenix.Endpoint, otp_app: :login_proxy
 
-  socket "/socket", LoginProxy.UserSocket
+  socket "/socket", LoginProxy.UserSocket,
+    websocket: true,
+    longpoll: false
 
   # Serve at "/" the static files from "priv/static" directory.
   #

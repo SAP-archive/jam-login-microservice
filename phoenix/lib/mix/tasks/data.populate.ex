@@ -8,7 +8,7 @@ defmodule Mix.Tasks.Data.Populate do
   mix data.populate
   """
   @shortdoc "Provide test tuples to the api test runner"
-  def run(args) do
+  def run(_args) do
     File.cp!("test_tuples.json", "test/testcases/test_tuples.json")
   end
 

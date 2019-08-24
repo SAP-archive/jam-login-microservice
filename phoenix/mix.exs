@@ -3,8 +3,8 @@ defmodule LoginProxy.Mixfile do
 
   def project do
     [app: :login_proxy,
-     version: "0.0.1",
-     elixir: "~> 1.2",
+     version: "0.0.2",
+     elixir: "~> 1.5",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
@@ -31,10 +31,12 @@ defmodule LoginProxy.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.2.1"},
-     {:phoenix_pubsub, "~> 1.0"},
-     {:phoenix_html, "~> 2.6"},
-     {:phoenix_live_reload, "~> 1.0", only: :dev},
+    [{:phoenix, "~> 1.4.0"},
+     {:phoenix_pubsub, "~> 1.1"},
+     {:phoenix_html, "~> 2.11"},
+     {:phoenix_live_reload, "~> 1.2", only: :dev},
+     {:ecto_sql, "~> 3.0"},
+     {:phoenix_ecto, "~> 4.0"},
      {:gettext, "~> 0.11"},
      {:elixir_uuid, "~> 1.2"},
      {:esaml, github: "sudrao/esaml", tag: "v1.2"},
@@ -45,8 +47,12 @@ defmodule LoginProxy.Mixfile do
      {:junit_formatter, "~> 1.3", only: [:test]},
      {:excoveralls, "~> 0.6", only: :test},
      {:dynamic_config, github: "rhetzler/dynamic_config", ref: '9a05a99ced627c764b54aa5241af2d92f1ddcaba' },
-     {:cowboy, "~> 1.0", override: true},
+     {:poison, "~> 3.1"},
+     {:jason, "~> 1.0"},
+     {:cowboy, "~> 2.5", override: true},
+     {:plug_cowboy, "~> 2.0"},
      {:distillery, "~> 1.5.2"},
+     {:plug, "~> 1.7"},
      ]
   end
 end

@@ -4,7 +4,7 @@ defmodule LoginProxy.HttpMock do
   @moduledoc """
   A mock for HTTPotion.request() method.
 
-  To use, start the GenServer using HttpMock.start() and 
+  To use, start the GenServer using HttpMock.start() and
   set up the response for your test by calling HttpMock.set_response().
   
   Now, do the action that would internally invoke HttpMock.request().
@@ -39,6 +39,11 @@ defmodule LoginProxy.HttpMock do
   end
 
   # Server
+  
+  def init(init_arg) do
+    {:ok, init_arg}
+  end
+
   def handle_cast({:set_response, params}, state) do
     {:noreply, Keyword.put(state, :response, params)}
   end
